@@ -27,7 +27,3 @@ import os
 
 # finally:
 #     conn.close()
-
-
-prod_list = get_prod_list()
-print(prod_list)

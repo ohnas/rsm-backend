@@ -111,8 +111,19 @@ def get_prod_list():
                 params = {
                     "order_version": "v1",
                 }
-                response = requests.get(url, headers=headers, params=params)
-                json_data = response.json()
+                # 코드가 200이 될 때까지 반복적으로 요청
+                max_retries = 5
+                retries = 0
+                response = None
+                while retries < max_retries:
+                    response = requests.get(url, headers=headers, params=params)
+                    json_data = response.json()
+                    if json_data["code"] == 200:
+                        break
+                    else:
+                        retries += 1
+                        time.sleep(1)
+
                 results = json_data["data"]
                 for result in results:
                     dic = {
