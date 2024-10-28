@@ -84,9 +84,9 @@ def get_order_list(date_from, date_to):
                         "deliv_type": result["payment"].get("deliv_type"),
                         "deliv_pay_type": result["payment"].get("deliv_pay_type"),
                         "price_currency": result["payment"].get("price_currency"),
-                        "total_price": result["payment"].get("total_price"),
-                        "deliv_price": result["payment"].get("deliv_price"),
-                        "payment_amount": result["payment"].get("payment_amount"),
+                        "total_price": result["payment"].get("total_price", 0),
+                        "deliv_price": result["payment"].get("deliv_price", 0),
+                        "payment_amount": result["payment"].get("payment_amount", 0),
                     }
                     order_list.append(dic)
 
@@ -96,7 +96,7 @@ def get_order_list(date_from, date_to):
 
 
 def get_prod_list():
-    order_list, access_token = get_order_list("2024-10-27", "2024-10-27")
+    order_list, access_token = get_order_list("2023-09-11", "2023-09-11")
     try:
         prod_list = []
         if order_list:
@@ -174,37 +174,75 @@ def get_prod_list():
                         "prod_deliv_price_type": result["items"][0]["delivery"][
                             "deliv_price_type"
                         ],
-                        "option_detail_code": result["items"][0]["options"][0][0][
-                            "option_detail_code"
-                        ],
-                        "option_type": result["items"][0]["options"][0][0]["type"],
-                        "option_stock_sku_no": result["items"][0]["options"][0][0][
-                            "stock_sku_no"
-                        ][0],
-                        "option_code_list": result["items"][0]["options"][0][0][
-                            "option_code_list"
-                        ][0],
-                        "option_name_list": result["items"][0]["options"][0][0][
-                            "option_name_list"
-                        ][0],
-                        "value_code_list": result["items"][0]["options"][0][0][
-                            "value_code_list"
-                        ][0],
-                        "value_name_list": result["items"][0]["options"][0][0][
-                            "value_name_list"
-                        ][0],
-                        "option_count": result["items"][0]["options"][0][0]["payment"][
-                            "count"
-                        ],
-                        "option_price": result["items"][0]["options"][0][0]["payment"][
-                            "price"
-                        ],
-                        "option_deliv_price": result["items"][0]["options"][0][0][
-                            "payment"
-                        ]["deliv_price"],
-                        "option_island_price": result["items"][0]["options"][0][0][
-                            "payment"
-                        ]["island_price"],
+                        "option_detail_code": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0][
+                                "option_detail_code"
+                            ]
+                        ),
+                        "option_type": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["type"]
+                        ),
+                        "option_stock_sku_no": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["stock_sku_no"][0]
+                        ),
+                        "option_code_list": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0][
+                                "option_code_list"
+                            ][0]
+                        ),
+                        "option_name_list": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0][
+                                "option_name_list"
+                            ][0]
+                        ),
+                        "value_code_list": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["value_code_list"][
+                                0
+                            ]
+                        ),
+                        "value_name_list": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["value_name_list"][
+                                0
+                            ]
+                        ),
+                        "option_count": (
+                            result["items"][0]["payment"]["count"]
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["payment"]["count"]
+                        ),
+                        "option_price": (
+                            result["items"][0]["payment"]["price"]
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["payment"]["price"]
+                        ),
+                        "option_deliv_price": (
+                            result["items"][0]["payment"]["deliv_price"]
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["payment"][
+                                "deliv_price"
+                            ]
+                        ),
+                        "option_island_price": (
+                            result["items"][0]["payment"]["island_price"]
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["payment"][
+                                "island_price"
+                            ]
+                        ),
                     }
                     merged = {**order, **dic}
                     prod_list.append(merged)

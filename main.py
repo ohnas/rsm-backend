@@ -1,9 +1,11 @@
-from imweb import get_prod_list
 import pymysql
 from dotenv import load_dotenv
 import os
+from temp import prod_list
 
 # load_dotenv()
+
+print(prod_list)
 
 # DB_HOST = os.getenv("DB_HOST")
 # DB_USER = os.getenv("DB_USER")
