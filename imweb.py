@@ -96,7 +96,7 @@ def get_order_list(date_from, date_to):
 
 
 def get_prod_list():
-    order_list, access_token = get_order_list("2023-09-11", "2023-09-11")
+    order_list, access_token = get_order_list("2023-09-12", "2023-09-12")
     try:
         prod_list = []
         if order_list:
@@ -131,9 +131,19 @@ def get_prod_list():
                         "prod_status": result["status"],
                         "prod_claim_status": result["claim_status"],
                         "prod_claim_type": result["claim_type"],
-                        "pay_time": result["pay_time"],
-                        "delivery_time": result["delivery_time"],
-                        "complete_time": result["complete_time"],
+                        "pay_time": (
+                            None if result["pay_time"] == 0 else result["pay_time"]
+                        ),
+                        "delivery_time": (
+                            None
+                            if result["delivery_time"] == 0
+                            else result["delivery_time"]
+                        ),
+                        "complete_time": (
+                            None
+                            if result["complete_time"] == 0
+                            else result["complete_time"]
+                        ),
                         "prod_no": result["items"][0]["prod_no"],
                         "prod_name": result["items"][0]["prod_name"],
                         "prod_custom_code": result["items"][0]["prod_custom_code"],
