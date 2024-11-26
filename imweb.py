@@ -117,9 +117,6 @@ def get_order_list(date_from, date_to):
         log_error(e)
 
 
-print(get_order_list("2023-09-14", "2023-09-14"))
-
-
 def get_prod_list():
     order_list, access_token = get_order_list("2023-09-14", "2023-09-14")
     try:
