@@ -74,11 +74,19 @@ def get_order_list(date_from, date_to):
                 for result in results:
                     dic = {
                         "type": type,
+                        "order_code": result.get("order_code"),
                         "order_no": result["order_no"],
+                        "channel_order_no": result.get("channel_order_no"),
+                        "order_time": result["order_time"],
                         "order_type": result["order_type"],
                         "is_gift": result["is_gift"],
+                        "sale_channel_idx": result.get("sale_channel_idx"),
                         "device": result["device"]["type"],
-                        "order_time": result["order_time"],
+                        "complete_time": (
+                            None
+                            if result["complete_time"] == 0
+                            else result["complete_time"]
+                        ),
                         "pay_type": result["payment"].get("pay_type"),
                         "pg_type": result["payment"].get("pg_type"),
                         "deliv_type": result["payment"].get("deliv_type"),
@@ -86,17 +94,34 @@ def get_order_list(date_from, date_to):
                         "price_currency": result["payment"].get("price_currency"),
                         "total_price": result["payment"].get("total_price", 0),
                         "deliv_price": result["payment"].get("deliv_price", 0),
+                        "island_price": result["payment"].get("island_price", 0),
+                        "price_sale": result["payment"].get("price_sale", 0),
+                        "point": result["payment"].get("point", 0),
+                        "coupon": result["payment"].get("coupon", 0),
+                        "membership_discount": result["payment"].get(
+                            "membership_discount", 0
+                        ),
+                        "period_discount": result["payment"].get("period_discount", 0),
                         "payment_amount": result["payment"].get("payment_amount", 0),
+                        "payment_time": (
+                            None
+                            if result["payment"].get("payment_time") == 0
+                            else result["payment"].get("payment_time")
+                        ),
+                        "avg_logis_expense": 3385,
                     }
                     order_list.append(dic)
-
-        return order_list, access_token
+        print(len(order_list))
+        return order_list
     except Exception as e:
         log_error(e)
 
 
+print(get_order_list("2023-09-14", "2023-09-14"))
+
+
 def get_prod_list():
-    order_list, access_token = get_order_list("2023-09-12", "2023-09-12")
+    order_list, access_token = get_order_list("2023-09-14", "2023-09-14")
     try:
         prod_list = []
         if order_list:
