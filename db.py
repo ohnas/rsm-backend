@@ -1,40 +1,7 @@
-import pymysql
-from dotenv import load_dotenv
-import os
+from tools import log_error
 
 
-load_dotenv()
-
-DB_HOST = os.getenv("DB_HOST")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_NAME = os.getenv("DB_NAME")
-
-conn = pymysql.connect(
-    host=DB_HOST,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    database=DB_NAME,
-    charset="utf8mb4",
-    cursorclass=pymysql.cursors.DictCursor,
-)
-
-# CLOUD_DB_HOST = os.getenv("CLOUD_DB_HOST")
-# CLOUD_DB_USER = os.getenv("CLOUD_DB_USER")
-# CLOUD_DB_PASSWORD = os.getenv("CLOUD_DB_PASSWORD")
-# CLOUD_DB_NAME = os.getenv("CLOUD_DB_NAME")
-
-# conn = pymysql.connect(
-#     host=CLOUD_DB_HOST,
-#     user=CLOUD_DB_USER,
-#     password=CLOUD_DB_PASSWORD,
-#     database=CLOUD_DB_NAME,
-#     charset="utf8mb4",
-#     cursorclass=pymysql.cursors.DictCursor,
-# )
-
-
-def insert_imweb_order_table(order_list):
+def insert_imweb_order_table(conn, order_list):
 
     sql = """
         INSERT INTO imweb_order_ttc (
@@ -98,15 +65,13 @@ def insert_imweb_order_table(order_list):
             cursor.executemany(sql, order_list)
 
         conn.commit()
-        print("success")
+        print("success : insert imweb_order_table")
     except Exception as e:
         print("fail")
-        print(e)
-    finally:
-        conn.close()
+        log_error(e)
 
 
-def insert_imweb_order_detail_table(order_detail_list):
+def insert_imweb_order_detail_table(conn, order_detail_list):
 
     sql = """
         INSERT INTO imweb_order_detail_ttc (
@@ -202,9 +167,7 @@ def insert_imweb_order_detail_table(order_detail_list):
             cursor.executemany(sql, order_detail_list)
 
         conn.commit()
-        print("success")
+        print("success : insert imweb_order_detail_table")
     except Exception as e:
         print("fail")
-        print(e)
-    finally:
-        conn.close()
+        log_error(e)
