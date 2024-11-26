@@ -1,7 +1,7 @@
 import pymysql
 from dotenv import load_dotenv
 import os
-from imweb import get_order_list
+
 
 load_dotenv()
 
@@ -34,8 +34,8 @@ conn = pymysql.connect(
 # )
 
 
-def insert_imweb_order_table():
-    order_list = get_order_list("2023-09-14", "2023-09-14")
+def insert_imweb_order_table(order_list):
+
     sql = """
         INSERT INTO imweb_order_ttc (
             type,
@@ -104,6 +104,3 @@ def insert_imweb_order_table():
         print(e)
     finally:
         conn.close()
-
-
-insert_imweb_order_table()

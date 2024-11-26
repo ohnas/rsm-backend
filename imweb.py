@@ -32,6 +32,7 @@ def get_order_list(date_from, date_to):
         timestamp_from, timestamp_to = get_timestamps(date_from, date_to)
         types = ["normal", "npay"]
         order_list = []
+        order_no_list = []
         for type in types:
             time.sleep(1.5)
             URL = "https://api.imweb.me/v2/shop/orders"
@@ -111,20 +112,21 @@ def get_order_list(date_from, date_to):
                         "avg_logis_expense": 3385,
                     }
                     order_list.append(dic)
-        print(len(order_list))
-        return order_list
+                    order_no_list.append(result["order_no"])
+        print("order list cnt : ", len(order_list))
+        print("order no list cnt : ", len(order_no_list))
+        return access_token, order_list, order_no_list
     except Exception as e:
         log_error(e)
 
 
-def get_prod_list():
-    order_list, access_token = get_order_list("2023-09-14", "2023-09-14")
+def get_order_detail_list(order_no_list, access_token):
     try:
-        prod_list = []
-        if order_list:
-            for order in order_list:
+        order_detail_list = []
+        if order_no_list:
+            for order_no in order_no_list:
                 time.sleep(0.5)
-                url = f"https://api.imweb.me/v2/shop/orders/{order['order_no']}/prod-orders"
+                url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
                 headers = {
                     "Content-Type": "application/json",
                     "access-token": access_token,
@@ -149,10 +151,12 @@ def get_prod_list():
                 results = json_data["data"]
                 for result in results:
                     dic = {
-                        "prod_order_no": result["order_no"],
-                        "prod_status": result["status"],
-                        "prod_claim_status": result["claim_status"],
-                        "prod_claim_type": result["claim_type"],
+                        "order_no": order_no,
+                        "order_detail_no": result["order_no"],
+                        "channel_order_item_no": result.get("channel_order_item_no"),
+                        "status": result["status"],
+                        "claim_status": result.get("claim_status"),
+                        "claim_type": result.get("claim_type"),
                         "pay_time": (
                             None if result["pay_time"] == 0 else result["pay_time"]
                         ),
@@ -170,6 +174,7 @@ def get_prod_list():
                         "prod_name": result["items"][0]["prod_name"],
                         "prod_custom_code": result["items"][0]["prod_custom_code"],
                         "prod_sku_no": result["items"][0]["prod_sku_no"],
+                        "prod_count": result["items"][0]["payment"].get("count", 0),
                         "prod_price": result["items"][0]["payment"]["price"],
                         "prod_price_tax_free": result["items"][0]["payment"][
                             "price_tax_free"
@@ -192,20 +197,27 @@ def get_prod_list():
                         "prod_period_discount": result["items"][0]["payment"][
                             "period_discount"
                         ],
-                        "prod_deliv_code": result["items"][0]["delivery"]["deliv_code"],
-                        "prod_deliv_price_mix": result["items"][0]["delivery"][
+                        "prod_deliv_code": result["items"][0]["delivery"].get(
+                            "deliv_code"
+                        ),
+                        "prod_deliv_price_mix": result["items"][0]["delivery"].get(
                             "deliv_price_mix"
-                        ],
-                        "prod_deliv_group_code": result["items"][0]["delivery"][
+                        ),
+                        "prod_deliv_group_code": result["items"][0]["delivery"].get(
                             "deliv_group_code"
-                        ],
-                        "prod_deliv_type": result["items"][0]["delivery"]["deliv_type"],
-                        "prod_deliv_pay_type": result["items"][0]["delivery"][
+                        ),
+                        "prod_deliv_type": result["items"][0]["delivery"].get(
+                            "deliv_type"
+                        ),
+                        "prod_deliv_pay_type": result["items"][0]["delivery"].get(
                             "deliv_pay_type"
-                        ],
-                        "prod_deliv_price_type": result["items"][0]["delivery"][
+                        ),
+                        "prod_deliv_price_type": result["items"][0]["delivery"].get(
                             "deliv_price_type"
-                        ],
+                        ),
+                        "option_is_mix": result["items"][0]["options"][0][0].get(
+                            "is_mix"
+                        ),
                         "option_detail_code": (
                             None
                             if result["items"][0].get("options") == None
@@ -276,10 +288,9 @@ def get_prod_list():
                             ]
                         ),
                     }
-                    merged = {**order, **dic}
-                    prod_list.append(merged)
+                    order_detail_list.append(dic)
 
-        print(len(prod_list))
-        return prod_list
+        print("order detail list cnt : ", len(order_detail_list))
+        return order_detail_list
     except Exception as e:
         log_error(e)
