@@ -3,6 +3,12 @@ from datetime import datetime
 import os
 import json
 import requests
+from tools import log_error
+
+load_dotenv()
+
+META_ACT_ID_TTC = os.getenv("META_ACT_ID_TTC")
+META_APP_ACCESSTOKEN = os.getenv("META_APP_ACCESSTOKEN")
 
 
 def to_int(value):
@@ -39,92 +45,94 @@ def get_action_value_from_values(action_values, action_type):
     )
 
 
-load_dotenv()
-
-META_ACT_ID_TTC = os.getenv("META_ACT_ID_TTC")
-META_APP_ACCESSTOKEN = os.getenv("META_APP_ACCESSTOKEN")
-ver = "v21.0"
-insights = "account_currency,account_id,account_name,campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,objective,spend,cost_per_inline_link_click,impressions,reach,frequency,cpm,cpp,created_time,updated_time,actions,action_values"
-url = f"https://graph.facebook.com/{ver}/act_{META_ACT_ID_TTC}/insights"
-params = {
-    "fields": insights,
-    "access_token": META_APP_ACCESSTOKEN,
-    "level": "ad",
-    "time_range": json.dumps(
-        {
-            "since": "2023-09-11",
-            "until": "2023-09-11",
+def get_meta(date_since, date_untill):
+    try:
+        ver = "v21.0"
+        insights = "account_currency,account_id,account_name,campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,objective,spend,cost_per_inline_link_click,impressions,reach,frequency,cpm,cpp,created_time,updated_time,actions,action_values"
+        url = f"https://graph.facebook.com/{ver}/act_{META_ACT_ID_TTC}/insights"
+        params = {
+            "fields": insights,
+            "access_token": META_APP_ACCESSTOKEN,
+            "level": "ad",
+            "time_range": json.dumps(
+                {
+                    "since": "2023-09-11",
+                    "until": "2023-09-11",
+                }
+            ),
+            "action_breakdowns": ["action_type"],
+            "limit": 100,
         }
-    ),
-    "action_breakdowns": ["action_type"],
-    "limit": 100,
-}
 
-results = []
+        results = []
 
-while url:
-    response = requests.get(url, params=params if "?" not in url else None)
-    if response.status_code == 200:
-        json_data = response.json()
-        results.extend(json_data.get("data", []))
-        url = json_data.get("paging", {}).get("next")
-    else:
-        print(f"Error: {response.status_code}, {response.text}")
-        break
+        while url:
+            response = requests.get(url, params=params if "?" not in url else None)
+            if response.status_code == 200:
+                json_data = response.json()
+                results.extend(json_data.get("data", []))
+                url = json_data.get("paging", {}).get("next")
+            else:
+                print(f"Error: {response.status_code}, {response.text}")
+                break
 
-meta_list = []
-if results:
-    for result in results:
-        actions = result.get("actions", [])
-        action_values = result.get("action_values", [])
+        meta_list = []
+        if results:
+            for result in results:
+                actions = result.get("actions", [])
+                action_values = result.get("action_values", [])
 
-        dic = {
-            "account_currency": result["account_currency"],
-            "account_id": to_int(result["account_id"]),
-            "account_name": result["account_name"],
-            "campaign_id": to_int(result["campaign_id"]),
-            "campaign_name": result["campaign_name"],
-            "adset_id": to_int(result["adset_id"]),
-            "adset_name": result["adset_name"],
-            "ad_id": to_int(result["ad_id"]),
-            "ad_name": result["ad_name"],
-            "objective": result["objective"],
-            "spend": to_float(result["spend"]),
-            "cost_per_inline_link_click": to_float(
-                result.get("cost_per_inline_link_click")
-            ),
-            "impressions": to_int(result["impressions"]),
-            "reach": to_int(result["reach"]),
-            "frequency": to_float(result["frequency"]),
-            "cpm": to_float(result["cpm"]),
-            "cpp": to_float(result["cpp"]),
-            "ad_created_time": to_date(result["created_time"]),
-            "ad_updated_time": to_date(result["updated_time"]),
-            "date_start": to_date(result["date_start"]),
-            "date_stop": to_date(result["date_stop"]),
-            "like": get_action_value(actions, "like"),
-            "comment": get_action_value(actions, "comment"),
-            "onsite_conversion_post_save": get_action_value(
-                actions, "onsite_conversion.post_save"
-            ),
-            "post_reaction": get_action_value(actions, "post_reaction"),
-            "post": get_action_value(actions, "post"),
-            "video_view": get_action_value(actions, "video_view"),
-            "post_engagement": get_action_value(actions, "post_engagement"),
-            "initiate_checkout": get_action_value(actions, "initiate_checkout"),
-            "add_to_cart": get_action_value(actions, "add_to_cart"),
-            "purchase": get_action_value(actions, "purchase"),
-            "add_payment_info": get_action_value(actions, "add_payment_info"),
-            "initiate_checkout_value": get_action_value_from_values(
-                action_values, "initiate_checkout"
-            ),
-            "add_to_cart_value": get_action_value_from_values(
-                action_values, "add_to_cart"
-            ),
-            "purchase_value": get_action_value_from_values(action_values, "purchase"),
-        }
-        meta_list.append(dic)
+                dic = {
+                    "account_currency": result["account_currency"],
+                    "account_id": to_int(result["account_id"]),
+                    "account_name": result["account_name"],
+                    "campaign_id": to_int(result["campaign_id"]),
+                    "campaign_name": result["campaign_name"],
+                    "adset_id": to_int(result["adset_id"]),
+                    "adset_name": result["adset_name"],
+                    "ad_id": to_int(result["ad_id"]),
+                    "ad_name": result["ad_name"],
+                    "objective": result["objective"],
+                    "spend": to_float(result["spend"]),
+                    "cost_per_inline_link_click": to_float(
+                        result.get("cost_per_inline_link_click")
+                    ),
+                    "impressions": to_int(result["impressions"]),
+                    "reach": to_int(result["reach"]),
+                    "frequency": to_float(result["frequency"]),
+                    "cpm": to_float(result["cpm"]),
+                    "cpp": to_float(result["cpp"]),
+                    "ad_created_time": to_date(result["created_time"]),
+                    "ad_updated_time": to_date(result["updated_time"]),
+                    "date_start": to_date(result["date_start"]),
+                    "date_stop": to_date(result["date_stop"]),
+                    "like": get_action_value(actions, "like"),
+                    "comment": get_action_value(actions, "comment"),
+                    "onsite_conversion_post_save": get_action_value(
+                        actions, "onsite_conversion.post_save"
+                    ),
+                    "post_reaction": get_action_value(actions, "post_reaction"),
+                    "post": get_action_value(actions, "post"),
+                    "video_view": get_action_value(actions, "video_view"),
+                    "post_engagement": get_action_value(actions, "post_engagement"),
+                    "initiate_checkout": get_action_value(actions, "initiate_checkout"),
+                    "add_to_cart": get_action_value(actions, "add_to_cart"),
+                    "purchase": get_action_value(actions, "purchase"),
+                    "add_payment_info": get_action_value(actions, "add_payment_info"),
+                    "initiate_checkout_value": get_action_value_from_values(
+                        action_values, "initiate_checkout"
+                    ),
+                    "add_to_cart_value": get_action_value_from_values(
+                        action_values, "add_to_cart"
+                    ),
+                    "purchase_value": get_action_value_from_values(
+                        action_values, "purchase"
+                    ),
+                }
+                meta_list.append(dic)
+        print(f"Total records fetched: {len(results)}")
+        print(f"Total records meta data: {len(meta_list)}")
+        return meta_list
 
-print(meta_list)
-print(f"Total records fetched: {len(results)}")
-print(f"Total records meta data: {len(meta_list)}")
+    except Exception as e:
+        log_error(e)
