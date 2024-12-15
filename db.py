@@ -286,7 +286,7 @@ def insert_meta_table(conn, meta_list):
             ad_updated_time,
             date_start,
             date_stop,
-            like,
+            `like`,
             comment,
             onsite_conversion_post_save,
             post_reaction,
@@ -301,7 +301,6 @@ def insert_meta_table(conn, meta_list):
             add_to_cart_value,
             purchase_value
         ) VALUES (
-            %(type)s,
             %(ad_id)s,
             %(objective)s,
             %(spend)s,

@@ -10,6 +10,7 @@ from db import (
     insert_meta_campaigns_table,
     insert_meta_adsets_table,
     insert_meta_ads_table,
+    insert_meta_table,
 )
 
 DATE_FROM = "2023-09-26"
@@ -53,10 +54,11 @@ try:
     # insert_imweb_order_table(conn, order_list)
     # insert_imweb_order_detail_table(conn, order_detail_list)
     meta_list = get_meta(DATE_SINCE, DATE_UNTILL)
-    # insert_meta_accounts_table(conn, meta_list)
-    # insert_meta_campaigns_table(conn, meta_list)
-    # insert_meta_adsets_table(conn, meta_list)
+    insert_meta_accounts_table(conn, meta_list)
+    insert_meta_campaigns_table(conn, meta_list)
+    insert_meta_adsets_table(conn, meta_list)
     insert_meta_ads_table(conn, meta_list)
+    insert_meta_table(conn, meta_list)
 
 finally:
     conn.close()
