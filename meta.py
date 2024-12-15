@@ -56,8 +56,8 @@ def get_meta(date_since, date_untill):
             "level": "ad",
             "time_range": json.dumps(
                 {
-                    "since": "2023-09-11",
-                    "until": "2023-09-11",
+                    "since": date_since,
+                    "until": date_untill,
                 }
             ),
             "action_breakdowns": ["action_type"],

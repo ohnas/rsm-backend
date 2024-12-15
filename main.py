@@ -2,10 +2,20 @@ import pymysql
 from dotenv import load_dotenv
 import os
 from imweb import get_order_list, get_order_detail_list
-from db import insert_imweb_order_table, insert_imweb_order_detail_table
+from meta import get_meta
+from db import (
+    insert_imweb_order_table,
+    insert_imweb_order_detail_table,
+    insert_meta_accounts_table,
+    insert_meta_campaigns_table,
+    insert_meta_adsets_table,
+    insert_meta_ads_table,
+)
 
 DATE_FROM = "2023-09-26"
 DATE_TO = "2023-09-26"
+DATE_SINCE = "2023-09-11"
+DATE_UNTILL = "2023-09-11"
 
 load_dotenv()
 
@@ -38,10 +48,15 @@ try:
     #     cursorclass=pymysql.cursors.DictCursor,
     # )
 
-    access_token, order_list, order_no_list = get_order_list(DATE_FROM, DATE_TO)
-    order_detail_list = get_order_detail_list(order_no_list, access_token)
-    insert_imweb_order_table(conn, order_list)
-    insert_imweb_order_detail_table(conn, order_detail_list)
+    # access_token, order_list, order_no_list = get_order_list(DATE_FROM, DATE_TO)
+    # order_detail_list = get_order_detail_list(order_no_list, access_token)
+    # insert_imweb_order_table(conn, order_list)
+    # insert_imweb_order_detail_table(conn, order_detail_list)
+    meta_list = get_meta(DATE_SINCE, DATE_UNTILL)
+    # insert_meta_accounts_table(conn, meta_list)
+    # insert_meta_campaigns_table(conn, meta_list)
+    # insert_meta_adsets_table(conn, meta_list)
+    insert_meta_ads_table(conn, meta_list)
 
 finally:
     conn.close()

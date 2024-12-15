@@ -183,7 +183,7 @@ def insert_meta_accounts_table(conn, meta_list):
         ) VALUES (
             %(account_id)s,
             %(account_currency)s,
-            %(account_name)s,
+            %(account_name)s
         )
     """
     try:
@@ -207,7 +207,7 @@ def insert_meta_campaigns_table(conn, meta_list):
         ) VALUES (
             %(account_id)s,
             %(campaign_id)s,
-            %(campaign_name)s,
+            %(campaign_name)s
         )
     """
     try:
@@ -227,11 +227,11 @@ def insert_meta_adsets_table(conn, meta_list):
         INSERT IGNORE INTO meta_adsets (
             campaign_id,
             adset_id,
-            campaign_name
+            adset_name
         ) VALUES (
             %(campaign_id)s,
             %(adset_id)s,
-            %(adset_name)s,
+            %(adset_name)s
         )
     """
     try:
@@ -255,7 +255,7 @@ def insert_meta_ads_table(conn, meta_list):
         ) VALUES (
             %(adset_id)s,
             %(ad_id)s,
-            %(ad_name)s,
+            %(ad_name)s
         )
     """
     try:
@@ -264,6 +264,79 @@ def insert_meta_ads_table(conn, meta_list):
 
         conn.commit()
         print("success : insert meta_ads_table")
+    except Exception as e:
+        print("fail")
+        log_error(e)
+
+
+def insert_meta_table(conn, meta_list):
+
+    sql = """
+        INSERT INTO meta_ttc (
+            ad_id,
+            objective,
+            spend,
+            cost_per_inline_link_click,
+            impressions,
+            reach,
+            frequency,
+            cpm,
+            cpp,
+            ad_created_time,
+            ad_updated_time,
+            date_start,
+            date_stop,
+            like,
+            comment,
+            onsite_conversion_post_save,
+            post_reaction,
+            post,
+            video_view,
+            post_engagement,
+            initiate_checkout,
+            add_to_cart,
+            purchase,
+            add_payment_info,
+            initiate_checkout_value,
+            add_to_cart_value,
+            purchase_value
+        ) VALUES (
+            %(type)s,
+            %(ad_id)s,
+            %(objective)s,
+            %(spend)s,
+            %(cost_per_inline_link_click)s,
+            %(impressions)s,
+            %(reach)s,
+            %(frequency)s,
+            %(cpm)s,
+            %(cpp)s,
+            %(ad_created_time)s,
+            %(ad_updated_time)s,
+            %(date_start)s,
+            %(date_stop)s,
+            %(like)s,
+            %(comment)s,
+            %(onsite_conversion_post_save)s,
+            %(post_reaction)s,
+            %(post)s,
+            %(video_view)s,
+            %(post_engagement)s,
+            %(initiate_checkout)s,
+            %(add_to_cart)s,
+            %(purchase)s,
+            %(add_payment_info)s,
+            %(initiate_checkout_value)s,
+            %(add_to_cart_value)s,
+            %(purchase_value)s
+        )
+    """
+    try:
+        with conn.cursor() as cursor:
+            cursor.executemany(sql, meta_list)
+
+        conn.commit()
+        print("success : insert meta_ttc_table")
     except Exception as e:
         print("fail")
         log_error(e)
