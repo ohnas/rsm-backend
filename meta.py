@@ -1,7 +1,42 @@
 from dotenv import load_dotenv
+from datetime import datetime
 import os
 import json
 import requests
+
+
+def to_int(value):
+    return int(value) if value not in [None, ""] else None
+
+
+def to_float(value):
+    return float(value) if value not in [None, ""] else None
+
+
+def to_date(value):
+    return datetime.strptime(value, "%Y-%m-%d").date() if value else None
+
+
+def get_action_value(actions, action_type):
+    return next(
+        (
+            to_int(action["value"])
+            for action in actions
+            if action["action_type"] == action_type
+        ),
+        None,
+    )
+
+
+def get_action_value_from_values(action_values, action_type):
+    return next(
+        (
+            to_float(action["value"])
+            for action in action_values
+            if action["action_type"] == action_type
+        ),
+        None,
+    )
 
 
 load_dotenv()
@@ -37,146 +72,59 @@ while url:
         print(f"Error: {response.status_code}, {response.text}")
         break
 
-
-print(f"Total records fetched: {len(results)}")
-
 meta_list = []
 if results:
     for result in results:
+        actions = result.get("actions", [])
+        action_values = result.get("action_values", [])
+
         dic = {
             "account_currency": result["account_currency"],
-            "account_id": result["account_id"],
+            "account_id": to_int(result["account_id"]),
             "account_name": result["account_name"],
-            "campaign_id": result["campaign_id"],
+            "campaign_id": to_int(result["campaign_id"]),
             "campaign_name": result["campaign_name"],
-            "adset_id": result["adset_id"],
+            "adset_id": to_int(result["adset_id"]),
             "adset_name": result["adset_name"],
-            "ad_id": result["ad_id"],
+            "ad_id": to_int(result["ad_id"]),
             "ad_name": result["ad_name"],
             "objective": result["objective"],
-            "spend": result["spend"],
-            "cost_per_inline_link_click": result.get("cost_per_inline_link_click"),
-            "impressions": result["impressions"],
-            "reach": result["reach"],
-            "frequency": result["frequency"],
-            "cpm": result["cpm"],
-            "cpp": result["cpp"],
-            "ad_created_time": result["created_time"],
-            "ad_updated_time": result["updated_time"],
-            "date_start": result["date_start"],
-            "date_stop": result["date_stop"],
-            "like": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "like"
-                ),
-                None,
+            "spend": to_float(result["spend"]),
+            "cost_per_inline_link_click": to_float(
+                result.get("cost_per_inline_link_click")
             ),
-            "comment": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "comment"
-                ),
-                None,
+            "impressions": to_int(result["impressions"]),
+            "reach": to_int(result["reach"]),
+            "frequency": to_float(result["frequency"]),
+            "cpm": to_float(result["cpm"]),
+            "cpp": to_float(result["cpp"]),
+            "ad_created_time": to_date(result["created_time"]),
+            "ad_updated_time": to_date(result["updated_time"]),
+            "date_start": to_date(result["date_start"]),
+            "date_stop": to_date(result["date_stop"]),
+            "like": get_action_value(actions, "like"),
+            "comment": get_action_value(actions, "comment"),
+            "onsite_conversion_post_save": get_action_value(
+                actions, "onsite_conversion.post_save"
             ),
-            "onsite_conversion.post_save": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "onsite_conversion.post_save"
-                ),
-                None,
+            "post_reaction": get_action_value(actions, "post_reaction"),
+            "post": get_action_value(actions, "post"),
+            "video_view": get_action_value(actions, "video_view"),
+            "post_engagement": get_action_value(actions, "post_engagement"),
+            "initiate_checkout": get_action_value(actions, "initiate_checkout"),
+            "add_to_cart": get_action_value(actions, "add_to_cart"),
+            "purchase": get_action_value(actions, "purchase"),
+            "add_payment_info": get_action_value(actions, "add_payment_info"),
+            "initiate_checkout_value": get_action_value_from_values(
+                action_values, "initiate_checkout"
             ),
-            "post_reaction": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "post_reaction"
-                ),
-                None,
+            "add_to_cart_value": get_action_value_from_values(
+                action_values, "add_to_cart"
             ),
-            "post": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "post"
-                ),
-                None,
-            ),
-            "video_view": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "video_view"
-                ),
-                None,
-            ),
-            "post_engagement": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "post_engagement"
-                ),
-                None,
-            ),
-            "initiate_checkout": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "initiate_checkout"
-                ),
-                None,
-            ),
-            "add_to_cart": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "add_to_cart"
-                ),
-                None,
-            ),
-            "purchase": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "purchase"
-                ),
-                None,
-            ),
-            "add_payment_info": next(
-                (
-                    action["value"]
-                    for action in result.get("actions", [])
-                    if action["action_type"] == "add_payment_info"
-                ),
-                None,
-            ),
-            "initiate_checkout_value": next(
-                (
-                    action["value"]
-                    for action in result.get("action_values", [])
-                    if action["action_type"] == "initiate_checkout"
-                ),
-                None,
-            ),
-            "add_to_cart_value": next(
-                (
-                    action["value"]
-                    for action in result.get("action_values", [])
-                    if action["action_type"] == "add_to_cart"
-                ),
-                None,
-            ),
-            "purchase_value": next(
-                (
-                    action["value"]
-                    for action in result.get("action_values", [])
-                    if action["action_type"] == "purchase"
-                ),
-                None,
-            ),
+            "purchase_value": get_action_value_from_values(action_values, "purchase"),
         }
         meta_list.append(dic)
+
 print(meta_list)
+print(f"Total records fetched: {len(results)}")
+print(f"Total records meta data: {len(meta_list)}")
