@@ -130,8 +130,9 @@ def get_meta(date_since, date_untill):
                     ),
                 }
                 meta_list.append(dic)
-        print(f"Total records fetched: {len(results)}")
+        print(f"meta total records fetched: {len(results)}")
         print(f"Total records meta data: {len(meta_list)}")
+        print("meta list success : ", date_since)
         return meta_list
 
     except Exception as e:

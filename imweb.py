@@ -115,6 +115,7 @@ def get_order_list(date_from, date_to):
                     order_no_list.append(result["order_no"])
         print("order list cnt : ", len(order_list))
         print("order no list cnt : ", len(order_no_list))
+        print("order list success : ", date_from)
         return access_token, order_list, order_no_list
     except Exception as e:
         log_error(e)
