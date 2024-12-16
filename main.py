@@ -15,8 +15,8 @@ from db import (
 
 DATE_FROM = "2023-09-26"
 DATE_TO = "2023-09-26"
-DATE_SINCE = "2023-09-11"
-DATE_UNTILL = "2023-09-11"
+DATE_SINCE = "2023-09-13"
+DATE_UNTILL = "2023-09-13"
 
 load_dotenv()
 
