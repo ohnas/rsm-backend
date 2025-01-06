@@ -116,6 +116,7 @@ def get_order_list(date_from, date_to):
         print("order list cnt : ", len(order_list))
         print("order no list cnt : ", len(order_no_list))
         print("order list success : ", date_from)
+        print("order list success : ", date_to)
         return access_token, order_list, order_no_list
     except Exception as e:
         log_error(e)
@@ -126,6 +127,7 @@ def get_order_detail_list(order_no_list, access_token):
         order_detail_list = []
         if order_no_list:
             for order_no in order_no_list:
+                print(order_no)
                 time.sleep(0.5)
                 url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
                 headers = {
@@ -232,9 +234,16 @@ def get_order_detail_list(order_no_list, access_token):
                             else result["items"][0]["options"][0][0]["type"]
                         ),
                         "option_stock_sku_no": (
-                            None
-                            if result["items"][0].get("options") == None
-                            else result["items"][0]["options"][0][0]["stock_sku_no"][0]
+                            result["items"][0]["options"][0][0]["stock_sku_no"][0]
+                            if result["items"][0].get("options")
+                            and len(result["items"][0]["options"][0]) > 0
+                            and len(
+                                result["items"][0]["options"][0][0].get(
+                                    "stock_sku_no", []
+                                )
+                            )
+                            > 0
+                            else None
                         ),
                         "option_code_list": (
                             None
@@ -289,6 +298,7 @@ def get_order_detail_list(order_no_list, access_token):
                             ]
                         ),
                     }
+                    print(dic)
                     order_detail_list.append(dic)
 
         print("order detail list cnt : ", len(order_detail_list))
