@@ -8,7 +8,7 @@ load_dotenv()
 
 API_KEY = os.getenv("IMWEB_API_KEY_TTC")
 API_SECRET = os.getenv("IMWEB_API_SECRET_TTC")
-ORDER_VERSION = "v2"
+ORDER_VERSION = "v1"
 
 
 def get_access_token():
@@ -128,7 +128,7 @@ def get_order_detail_list(order_no_list, access_token):
         order_detail_list = []
         if order_no_list:
             for order_no in order_no_list:
-                time.sleep(0.5)
+                time.sleep(1)
                 url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
                 headers = {
                     "Content-Type": "application/json",

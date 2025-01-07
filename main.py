@@ -13,8 +13,8 @@ from db import (
     insert_meta_table,
 )
 
-DATE_FROM = "2024-07-03"
-DATE_TO = "2024-07-03"
+DATE_FROM = "2024-07-16"
+DATE_TO = "2024-07-16"
 # DATE_SINCE = "2023-09-30"
 # DATE_UNTILL = "2023-09-30"
 
