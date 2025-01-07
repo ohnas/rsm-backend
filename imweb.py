@@ -8,6 +8,7 @@ load_dotenv()
 
 API_KEY = os.getenv("IMWEB_API_KEY_TTC")
 API_SECRET = os.getenv("IMWEB_API_SECRET_TTC")
+ORDER_VERSION = "v2"
 
 
 def get_access_token():
@@ -46,7 +47,7 @@ def get_order_list(date_from, date_to):
                 "order_date_from": timestamp_from,
                 "order_date_to": timestamp_to,
                 "type": type,
-                "order_version": "v1",
+                "order_version": ORDER_VERSION,
             }
             response = requests.get(URL, headers=headers, params=params)
             json_data = response.json()
@@ -64,7 +65,7 @@ def get_order_list(date_from, date_to):
                         "order_date_from": timestamp_from,
                         "order_date_to": timestamp_to,
                         "type": "npay",
-                        "order_version": "v1",
+                        "order_version": ORDER_VERSION,
                         "offset": current_page,
                     }
                     response = requests.get(URL, headers=headers, params=params)
@@ -115,8 +116,8 @@ def get_order_list(date_from, date_to):
                     order_no_list.append(result["order_no"])
         print("order list cnt : ", len(order_list))
         print("order no list cnt : ", len(order_no_list))
-        print("order list success : ", date_from)
-        print("order list success : ", date_to)
+        print("success : order list from : ", date_from)
+        print("success : order list to : ", date_to)
         return access_token, order_list, order_no_list
     except Exception as e:
         log_error(e)
@@ -127,7 +128,6 @@ def get_order_detail_list(order_no_list, access_token):
         order_detail_list = []
         if order_no_list:
             for order_no in order_no_list:
-                print(order_no)
                 time.sleep(0.5)
                 url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
                 headers = {
@@ -136,7 +136,7 @@ def get_order_detail_list(order_no_list, access_token):
                     "version": "latest",
                 }
                 params = {
-                    "order_version": "v1",
+                    "order_version": ORDER_VERSION,
                 }
                 # 코드가 200이 될 때까지 반복적으로 요청
                 max_retries = 5
@@ -161,16 +161,18 @@ def get_order_detail_list(order_no_list, access_token):
                         "claim_status": result.get("claim_status"),
                         "claim_type": result.get("claim_type"),
                         "pay_time": (
-                            None if result["pay_time"] == 0 else result["pay_time"]
+                            None
+                            if result.get("pay_time") in [0, None]
+                            else result["pay_time"]
                         ),
                         "delivery_time": (
                             None
-                            if result["delivery_time"] == 0
+                            if result.get("delivery_time") in [0, None]
                             else result["delivery_time"]
                         ),
                         "complete_time": (
                             None
-                            if result["complete_time"] == 0
+                            if result.get("complete_time") in [0, None]
                             else result["complete_time"]
                         ),
                         "prod_no": result["items"][0]["prod_no"],
@@ -197,9 +199,9 @@ def get_order_detail_list(order_no_list, access_token):
                         "prod_membership_discount": result["items"][0]["payment"][
                             "membership_discount"
                         ],
-                        "prod_period_discount": result["items"][0]["payment"][
-                            "period_discount"
-                        ],
+                        "prod_period_discount": result["items"][0]["payment"].get(
+                            "period_discount", 0
+                        ),
                         "prod_deliv_code": result["items"][0]["delivery"].get(
                             "deliv_code"
                         ),
@@ -298,10 +300,9 @@ def get_order_detail_list(order_no_list, access_token):
                             ]
                         ),
                     }
-                    print(dic)
                     order_detail_list.append(dic)
 
-        print("order detail list cnt : ", len(order_detail_list))
+        print("success : order detail list cnt : ", len(order_detail_list))
         return order_detail_list
     except Exception as e:
         log_error(e)

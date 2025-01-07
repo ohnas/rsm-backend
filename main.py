@@ -13,8 +13,8 @@ from db import (
     insert_meta_table,
 )
 
-DATE_FROM = "2023-12-08"
-DATE_TO = "2023-12-08"
+DATE_FROM = "2024-07-03"
+DATE_TO = "2024-07-03"
 # DATE_SINCE = "2023-09-30"
 # DATE_UNTILL = "2023-09-30"
 
@@ -51,8 +51,8 @@ try:
 
     access_token, order_list, order_no_list = get_order_list(DATE_FROM, DATE_TO)
     order_detail_list = get_order_detail_list(order_no_list, access_token)
-    # insert_imweb_order_table(conn, order_list)
-    # insert_imweb_order_detail_table(conn, order_detail_list)
+    insert_imweb_order_table(conn, order_list)
+    insert_imweb_order_detail_table(conn, order_detail_list)
     # meta_list = get_meta(DATE_SINCE, DATE_UNTILL)
     # insert_meta_accounts_table(conn, meta_list)
     # insert_meta_campaigns_table(conn, meta_list)
