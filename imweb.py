@@ -8,7 +8,7 @@ load_dotenv()
 
 API_KEY = os.getenv("IMWEB_API_KEY_TTC")
 API_SECRET = os.getenv("IMWEB_API_SECRET_TTC")
-ORDER_VERSION = "v1"
+ORDER_VERSION = "v2"
 
 
 def get_access_token():
@@ -33,7 +33,7 @@ def get_order_list(date_from, date_to):
         timestamp_from, timestamp_to = get_timestamps(date_from, date_to)
         types = ["normal", "npay"]
         order_list = []
-        order_no_list = []
+        order_no_list = set()
         for type in types:
             time.sleep(1.5)
             URL = "https://api.imweb.me/v2/shop/orders"
@@ -51,74 +51,33 @@ def get_order_list(date_from, date_to):
             }
             response = requests.get(URL, headers=headers, params=params)
             json_data = response.json()
+            results = json_data["data"]["list"]
             current_page = json_data["data"]["pagenation"]["current_page"]
             total_page = json_data["data"]["pagenation"]["total_page"]
-            results = json_data["data"]["list"]
+
+            for result in results:
+                order_no_list.add(result["order_no"])
+                order_list.append(result)
 
             if results and total_page > 1:
-                time.sleep(1.5)
-                while current_page <= total_page:
+                while current_page < total_page:
                     time.sleep(1.5)
                     current_page += 1
-                    params = {
-                        "limit": 100,
-                        "order_date_from": timestamp_from,
-                        "order_date_to": timestamp_to,
-                        "type": "npay",
-                        "order_version": ORDER_VERSION,
-                        "offset": current_page,
-                    }
+                    params["offset"] = current_page
                     response = requests.get(URL, headers=headers, params=params)
                     json_data = response.json()
-                    results.extend(json_data["data"]["list"])
+                    new_results = json_data["data"]["list"]
 
-            if results:
-                for result in results:
-                    dic = {
-                        "type": type,
-                        "order_code": result.get("order_code"),
-                        "order_no": result["order_no"],
-                        "channel_order_no": result.get("channel_order_no"),
-                        "order_time": result["order_time"],
-                        "order_type": result["order_type"],
-                        "is_gift": result["is_gift"],
-                        "sale_channel_idx": result.get("sale_channel_idx"),
-                        "device": result["device"]["type"],
-                        "complete_time": (
-                            None
-                            if result["complete_time"] == 0
-                            else result["complete_time"]
-                        ),
-                        "pay_type": result["payment"].get("pay_type"),
-                        "pg_type": result["payment"].get("pg_type"),
-                        "deliv_type": result["payment"].get("deliv_type"),
-                        "deliv_pay_type": result["payment"].get("deliv_pay_type"),
-                        "price_currency": result["payment"].get("price_currency"),
-                        "total_price": result["payment"].get("total_price", 0),
-                        "deliv_price": result["payment"].get("deliv_price", 0),
-                        "island_price": result["payment"].get("island_price", 0),
-                        "price_sale": result["payment"].get("price_sale", 0),
-                        "point": result["payment"].get("point", 0),
-                        "coupon": result["payment"].get("coupon", 0),
-                        "membership_discount": result["payment"].get(
-                            "membership_discount", 0
-                        ),
-                        "period_discount": result["payment"].get("period_discount", 0),
-                        "payment_amount": result["payment"].get("payment_amount", 0),
-                        "payment_time": (
-                            None
-                            if result["payment"].get("payment_time") == 0
-                            else result["payment"].get("payment_time")
-                        ),
-                        "avg_logis_expense": 3385,
-                    }
-                    order_list.append(dic)
-                    order_no_list.append(result["order_no"])
-        print("order list cnt : ", len(order_list))
-        print("order no list cnt : ", len(order_no_list))
-        print("success : order list from : ", date_from)
-        print("success : order list to : ", date_to)
-        return access_token, order_list, order_no_list
+                    for result in new_results:
+                        if result["order_no"] not in order_no_list:
+                            order_no_list.add(result["order_no"])
+                            order_list.append(result)
+
+        print("order list cnt:", len(order_list))
+        print("order no list cnt:", len(order_no_list))
+        print("success : order list from:", date_from)
+        print("success : order list to:", date_to)
+        return access_token, order_list, list(order_no_list)
     except Exception as e:
         log_error(e)
 
