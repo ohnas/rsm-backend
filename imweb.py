@@ -128,7 +128,7 @@ def get_order_detail_list(order_no_list, access_token):
         order_detail_list = []
         if order_no_list:
             for order_no in order_no_list:
-                time.sleep(1)
+                time.sleep(0.7)
                 url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
                 headers = {
                     "Content-Type": "application/json",
@@ -149,7 +149,7 @@ def get_order_detail_list(order_no_list, access_token):
                         break
                     else:
                         retries += 1
-                        time.sleep(1)
+                        time.sleep(0.7)
 
                 results = json_data["data"]
                 for result in results:
