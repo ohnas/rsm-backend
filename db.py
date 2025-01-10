@@ -1,4 +1,4 @@
-from tools import log_error
+from tools import log_error, insert_log
 
 
 def insert_imweb_order_table(conn, order_list):
@@ -66,9 +66,13 @@ def insert_imweb_order_table(conn, order_list):
 
         conn.commit()
         print("success : insert imweb_order_table")
+        insert_log(
+            conn, "SUCCESS", f"Order inserted for {len(order_list)}", "imweb", "TTC"
+        )
     except Exception as e:
         print("fail")
         log_error(e)
+        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
 
 
 def insert_imweb_order_detail_table(conn, order_detail_list):
@@ -168,9 +172,17 @@ def insert_imweb_order_detail_table(conn, order_detail_list):
 
         conn.commit()
         print("success : insert imweb_order_detail_table")
+        insert_log(
+            conn,
+            "SUCCESS",
+            f"Order inserted for {len(order_detail_list)}",
+            "imweb",
+            "TTC",
+        )
     except Exception as e:
         print("fail")
         log_error(e)
+        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
 
 
 def insert_meta_accounts_table(conn, meta_list):

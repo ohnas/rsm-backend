@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import time
-from tools import get_timestamps, log_error
+from tools import get_timestamps, log_error, insert_log
 
 load_dotenv()
 
@@ -27,7 +27,7 @@ def get_access_token():
         log_error(e)
 
 
-def get_order_list(date_from, date_to):
+def get_order_list(date_from, date_to, conn):
     access_token = get_access_token()
     try:
         timestamp_from, timestamp_to = get_timestamps(date_from, date_to)
@@ -118,12 +118,16 @@ def get_order_list(date_from, date_to):
         print("order no list cnt : ", len(order_no_list))
         print("success : order list from : ", date_from)
         print("success : order list to : ", date_to)
+        insert_log(
+            conn, "SUCCESS", f"Order fetched for {len(order_list)}", "imweb", "TTC"
+        )
         return access_token, order_list, list(order_no_list)
     except Exception as e:
         log_error(e)
+        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
 
 
-def get_order_detail_list(order_no_list, access_token):
+def get_order_detail_list(order_no_list, access_token, conn):
     try:
         order_detail_list = []
         if order_no_list:
@@ -303,6 +307,14 @@ def get_order_detail_list(order_no_list, access_token):
                     order_detail_list.append(dic)
 
         print("success : order detail list cnt : ", len(order_detail_list))
+        insert_log(
+            conn,
+            "SUCCESS",
+            f"Order details fetched for {len(order_detail_list)}",
+            "imweb",
+            "TTC",
+        )
         return order_detail_list
     except Exception as e:
         log_error(e)
+        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
