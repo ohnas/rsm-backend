@@ -80,6 +80,7 @@ def get_meta(date_since, date_untill):
         meta_list = []
         if results:
             for result in results:
+
                 actions = result.get("actions", [])
                 action_values = result.get("action_values", [])
 
@@ -120,6 +121,7 @@ def get_meta(date_since, date_untill):
                     "add_to_cart": get_action_value(actions, "add_to_cart"),
                     "purchase": get_action_value(actions, "purchase"),
                     "add_payment_info": get_action_value(actions, "add_payment_info"),
+                    "link_click": get_action_value(actions, "link_click"),
                     "initiate_checkout_value": get_action_value_from_values(
                         action_values, "initiate_checkout"
                     ),
@@ -130,6 +132,7 @@ def get_meta(date_since, date_untill):
                         action_values, "purchase"
                     ),
                 }
+                print(dic)
                 meta_list.append(dic)
         print(f"meta total records fetched: {len(results)}")
         print(f"Total records meta data: {len(meta_list)}")
