@@ -271,3 +271,25 @@ def insert_meta_table(conn, meta_list):
     except Exception as e:
         print("fail")
         log_error(e)
+
+
+def insert_exchange_rate_table(conn, exchange_rate_data):
+
+    sql = """
+        INSERT INTO exchange_rate (
+            date,
+            krw
+        ) VALUES (
+            %(date)s,
+            %(krw)s
+        )
+    """
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(sql, exchange_rate_data)
+
+        conn.commit()
+        print("success : insert insert_exchange_rate_table")
+    except Exception as e:
+        print("fail")
+        log_error(e)
