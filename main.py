@@ -6,17 +6,13 @@ from meta import get_meta
 from db import (
     insert_imweb_order_table,
     insert_imweb_order_detail_table,
-    insert_meta_accounts_table,
-    insert_meta_campaigns_table,
-    insert_meta_adsets_table,
-    insert_meta_ads_table,
     insert_meta_table,
 )
 
 # DATE_FROM = "2025-01-11"
 # DATE_TO = "2025-01-11"
-DATE_SINCE = "2023-09-11"
-DATE_UNTILL = "2023-09-12"
+DATE_SINCE = "2024-11-01"
+DATE_UNTILL = "2024-11-05"
 
 load_dotenv()
 
