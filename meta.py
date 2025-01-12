@@ -84,13 +84,13 @@ def get_meta(date_since, date_untill):
 
                 dic = {
                     "account_currency": result["account_currency"],
-                    "account_id": to_int(result["account_id"]),
+                    "account_id": result["account_id"],
                     "account_name": result["account_name"],
-                    "campaign_id": to_int(result["campaign_id"]),
+                    "campaign_id": result["campaign_id"],
                     "campaign_name": result["campaign_name"],
-                    "adset_id": to_int(result["adset_id"]),
+                    "adset_id": result["adset_id"],
                     "adset_name": result["adset_name"],
-                    "ad_id": to_int(result["ad_id"]),
+                    "ad_id": result["ad_id"],
                     "ad_name": result["ad_name"],
                     "objective": result.get("objective"),
                     "spend": to_float(result.get("spend")),
@@ -132,7 +132,9 @@ def get_meta(date_since, date_untill):
                 meta_list.append(dic)
         print(f"meta total records fetched: {len(results)}")
         print(f"Total records meta data: {len(meta_list)}")
-        print("meta list success : ", date_since)
+        print("meta list success from : ", date_since)
+        print("meta list success to : ", date_untill)
+        print(meta_list)
         return meta_list
 
     except Exception as e:
