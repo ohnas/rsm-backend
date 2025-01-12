@@ -185,107 +185,19 @@ def insert_imweb_order_detail_table(conn, order_detail_list):
         insert_log(conn, "FAIL", str(e), "imweb", "TTC")
 
 
-def insert_meta_accounts_table(conn, meta_list):
-
-    sql = """
-        INSERT IGNORE INTO meta_accounts (
-            account_id,
-            account_currency,
-            account_name
-        ) VALUES (
-            %(account_id)s,
-            %(account_currency)s,
-            %(account_name)s
-        )
-    """
-    try:
-        with conn.cursor() as cursor:
-            cursor.executemany(sql, meta_list)
-
-        conn.commit()
-        print("success : insert meta_accounts_table")
-    except Exception as e:
-        print("fail")
-        log_error(e)
-
-
-def insert_meta_campaigns_table(conn, meta_list):
-
-    sql = """
-        INSERT IGNORE INTO meta_campaigns (
-            account_id,
-            campaign_id,
-            campaign_name
-        ) VALUES (
-            %(account_id)s,
-            %(campaign_id)s,
-            %(campaign_name)s
-        )
-    """
-    try:
-        with conn.cursor() as cursor:
-            cursor.executemany(sql, meta_list)
-
-        conn.commit()
-        print("success : insert meta_campaigns_table")
-    except Exception as e:
-        print("fail")
-        log_error(e)
-
-
-def insert_meta_adsets_table(conn, meta_list):
-
-    sql = """
-        INSERT IGNORE INTO meta_adsets (
-            campaign_id,
-            adset_id,
-            adset_name
-        ) VALUES (
-            %(campaign_id)s,
-            %(adset_id)s,
-            %(adset_name)s
-        )
-    """
-    try:
-        with conn.cursor() as cursor:
-            cursor.executemany(sql, meta_list)
-
-        conn.commit()
-        print("success : insert meta_adsets_table")
-    except Exception as e:
-        print("fail")
-        log_error(e)
-
-
-def insert_meta_ads_table(conn, meta_list):
-
-    sql = """
-        INSERT IGNORE INTO meta_ads (
-            adset_id,
-            ad_id,
-            ad_name
-        ) VALUES (
-            %(adset_id)s,
-            %(ad_id)s,
-            %(ad_name)s
-        )
-    """
-    try:
-        with conn.cursor() as cursor:
-            cursor.executemany(sql, meta_list)
-
-        conn.commit()
-        print("success : insert meta_ads_table")
-    except Exception as e:
-        print("fail")
-        log_error(e)
-
-
 def insert_meta_table(conn, meta_list):
 
     sql = """
         INSERT INTO meta_ttc (
+            account_currency,
+            account_id,
+            account_name,
+            campaign_id,
+            campaign_name,
+            adset_id,
+            adset_name,
             ad_id,
+            ad_name,
             objective,
             spend,
             cost_per_inline_link_click,
@@ -313,7 +225,15 @@ def insert_meta_table(conn, meta_list):
             add_to_cart_value,
             purchase_value
         ) VALUES (
+            %(account_currency)s,
+            %(account_id)s,
+            %(account_name)s,
+            %(campaign_id)s,
+            %(campaign_name)s,
+            %(adset_id)s,
+            %(adset_name)s,
             %(ad_id)s,
+            %(ad_name)s,
             %(objective)s,
             %(spend)s,
             %(cost_per_inline_link_click)s,

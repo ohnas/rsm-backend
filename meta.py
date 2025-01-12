@@ -60,6 +60,7 @@ def get_meta(date_since, date_untill):
                     "until": date_untill,
                 }
             ),
+            "time_increment": 1,
             "action_breakdowns": ["action_type"],
             "limit": 100,
         }
@@ -134,7 +135,6 @@ def get_meta(date_since, date_untill):
         print(f"Total records meta data: {len(meta_list)}")
         print("meta list success from : ", date_since)
         print("meta list success to : ", date_untill)
-        print(meta_list)
         return meta_list
 
     except Exception as e:
