@@ -30,8 +30,8 @@ def insert_log(conn, date, status, message=None, platform=None, brand=None):
     function_name = inspect.currentframe().f_back.f_code.co_name
 
     sql = """
-        INSERT INTO logs (function_name, status, message, platform, brand)
-        VALUES (%(function_name)s, %(status)s, %(message)s, %(platform)s, %(brand)s)
+        INSERT INTO logs (date, function_name, status, message, platform, brand)
+        VALUES (%(date)s, %(function_name)s, %(status)s, %(message)s, %(platform)s, %(brand)s)
     """
     with conn.cursor() as cursor:
         cursor.execute(
