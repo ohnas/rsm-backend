@@ -119,15 +119,20 @@ def get_order_list(date_from, date_to, conn):
         print("success : order list from : ", date_from)
         print("success : order list to : ", date_to)
         insert_log(
-            conn, "SUCCESS", f"Order fetched for {len(order_list)}", "imweb", "TTC"
+            conn,
+            date_from,
+            "SUCCESS",
+            f"Order fetched for {len(order_list)}",
+            "imweb",
+            "TTC",
         )
         return access_token, order_list, list(order_no_list)
     except Exception as e:
         log_error(e)
-        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
+        insert_log(conn, date_from, "FAIL", str(e), "imweb", "TTC")
 
 
-def get_order_detail_list(order_no_list, access_token, conn):
+def get_order_detail_list(order_no_list, access_token, conn, date):
     try:
         order_detail_list = []
         if order_no_list:
@@ -309,6 +314,7 @@ def get_order_detail_list(order_no_list, access_token, conn):
         print("success : order detail list cnt : ", len(order_detail_list))
         insert_log(
             conn,
+            date,
             "SUCCESS",
             f"Order details fetched for {len(order_detail_list)}",
             "imweb",
@@ -317,4 +323,4 @@ def get_order_detail_list(order_no_list, access_token, conn):
         return order_detail_list
     except Exception as e:
         log_error(e)
-        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
+        insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
