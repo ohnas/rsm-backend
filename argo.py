@@ -21,7 +21,7 @@ conn = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor,
 )
 
-FILE_PATH = "/Users/ohnaseong/Downloads/2022_12.xlsx"
+FILE_PATH = "/Users/ohnaseong/Downloads/2023_02.xlsx"
 WORK_BOOK = load_workbook(FILE_PATH)
 
 
@@ -84,7 +84,7 @@ def insert_argo_return_table(conn):
             with conn.cursor() as cursor:
                 cursor.executemany(sql, data)
             conn.commit()
-            print(f"Success: Inserted {len(data)} rows into argo_inbound")
+            print(f"Success: Inserted {len(data)} rows into argo_return")
         except Exception as e:
             print(f"Error: {str(e)}")
 
@@ -116,7 +116,7 @@ def insert_argo_storage_table(conn):
             with conn.cursor() as cursor:
                 cursor.executemany(sql, data)
             conn.commit()
-            print(f"Success: Inserted {len(data)} rows into argo_inbound")
+            print(f"Success: Inserted {len(data)} rows into argo_storage")
         except Exception as e:
             print(f"Error: {str(e)}")
 
@@ -178,7 +178,7 @@ def insert_argo_shipping_table(conn):
             with conn.cursor() as cursor:
                 cursor.executemany(sql, data)
             conn.commit()
-            print(f"Success: Inserted {len(data)} rows into argo_inbound")
+            print(f"Success: Inserted {len(data)} rows into argo_shipping")
         except Exception as e:
             print(f"Error: {str(e)}")
 
@@ -231,7 +231,7 @@ def insert_argo_b2b_table(conn):
             with conn.cursor() as cursor:
                 cursor.executemany(sql, data)
             conn.commit()
-            print(f"Success: Inserted {len(data)} rows into argo_inbound")
+            print(f"Success: Inserted {len(data)} rows into argo_b2b")
         except Exception as e:
             print(f"Error: {str(e)}")
 
@@ -278,7 +278,7 @@ def insert_argo_etc_table(conn):
             with conn.cursor() as cursor:
                 cursor.executemany(sql, data)
             conn.commit()
-            print(f"Success: Inserted {len(data)} rows into argo_inbound")
+            print(f"Success: Inserted {len(data)} rows into argo_etc")
         except Exception as e:
             print(f"Error: {str(e)}")
 
