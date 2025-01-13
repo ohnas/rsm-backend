@@ -1,7 +1,7 @@
 from tools import log_error, insert_log
 
 
-def insert_imweb_order_table(conn, order_list):
+def insert_imweb_order_table(conn, order_list, date):
 
     sql = """
         INSERT INTO imweb_order_ttc (
@@ -67,15 +67,20 @@ def insert_imweb_order_table(conn, order_list):
         conn.commit()
         print("success : insert imweb_order_table")
         insert_log(
-            conn, "SUCCESS", f"Order inserted for {len(order_list)}", "imweb", "TTC"
+            conn,
+            date,
+            "SUCCESS",
+            f"Order inserted for {len(order_list)}",
+            "imweb",
+            "TTC",
         )
     except Exception as e:
         print("fail")
         log_error(e)
-        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
+        insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
 
 
-def insert_imweb_order_detail_table(conn, order_detail_list):
+def insert_imweb_order_detail_table(conn, order_detail_list, date):
 
     sql = """
         INSERT INTO imweb_order_detail_ttc (
@@ -174,6 +179,7 @@ def insert_imweb_order_detail_table(conn, order_detail_list):
         print("success : insert imweb_order_detail_table")
         insert_log(
             conn,
+            date,
             "SUCCESS",
             f"Order inserted for {len(order_detail_list)}",
             "imweb",
@@ -182,10 +188,10 @@ def insert_imweb_order_detail_table(conn, order_detail_list):
     except Exception as e:
         print("fail")
         log_error(e)
-        insert_log(conn, "FAIL", str(e), "imweb", "TTC")
+        insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
 
 
-def insert_meta_table(conn, meta_list):
+def insert_meta_table(conn, meta_list, date):
 
     sql = """
         INSERT INTO meta_ttc (
@@ -270,12 +276,21 @@ def insert_meta_table(conn, meta_list):
 
         conn.commit()
         print("success : insert meta_ttc_table")
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            f"meta inserted for {len(meta_list)}",
+            "meta",
+            "TTC",
+        )
     except Exception as e:
         print("fail")
         log_error(e)
+        insert_log(conn, date, "FAIL", str(e), "meta", "TTC")
 
 
-def insert_exchange_rate_table(conn, exchange_rate_data):
+def insert_exchange_rate_table(conn, exchange_rate_data, date):
 
     sql = """
         INSERT INTO exchange_rate (
@@ -292,6 +307,15 @@ def insert_exchange_rate_table(conn, exchange_rate_data):
 
         conn.commit()
         print("success : insert insert_exchange_rate_table")
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            "-",
+            "exchange_rate",
+            "-",
+        )
     except Exception as e:
         print("fail")
         log_error(e)
+        insert_log(conn, date, "FAIL", str(e), "exchange_rate", "-")
