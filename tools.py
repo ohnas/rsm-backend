@@ -25,7 +25,7 @@ def log_error(e):
     print(f"Error in {function_name}: {e}")
 
 
-def insert_log(conn, status, message=None, platform=None, brand=None):
+def insert_log(conn, date, status, message=None, platform=None, brand=None):
 
     function_name = inspect.currentframe().f_back.f_code.co_name
 
@@ -37,6 +37,7 @@ def insert_log(conn, status, message=None, platform=None, brand=None):
         cursor.execute(
             sql,
             {
+                "date": date,
                 "function_name": function_name,
                 "status": status,
                 "message": message,

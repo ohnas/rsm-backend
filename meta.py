@@ -132,7 +132,6 @@ def get_meta(date_since, date_untill):
                         action_values, "purchase"
                     ),
                 }
-                print(dic)
                 meta_list.append(dic)
         print(f"meta total records fetched: {len(results)}")
         print(f"Total records meta data: {len(meta_list)}")

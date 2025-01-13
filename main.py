@@ -13,7 +13,7 @@ from db import (
 
 # DATE_FROM = "2025-01-11"
 # DATE_TO = "2025-01-11"
-DATE_SINCE = "2025-01-11"
+DATE_SINCE = "2025-01-06"
 DATE_UNTILL = "2025-01-11"
 # DATE = "2025-01-11"
 
@@ -53,7 +53,7 @@ try:
     # insert_imweb_order_table(conn, order_list)
     # insert_imweb_order_detail_table(conn, order_detail_list)
     meta_list = get_meta(DATE_SINCE, DATE_UNTILL)
-    # insert_meta_table(conn, meta_list)
+    insert_meta_table(conn, meta_list)
     # exchange_rate_data = get_krw_exchange_rate(DATE)
     # insert_exchange_rate_table(conn, exchange_rate_data)
 
