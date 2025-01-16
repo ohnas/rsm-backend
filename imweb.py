@@ -9,6 +9,7 @@ load_dotenv()
 API_KEY = os.getenv("IMWEB_API_KEY_TTC")
 API_SECRET = os.getenv("IMWEB_API_SECRET_TTC")
 ORDER_VERSION = "v2"
+MODE_LOGIS_EXPENSE_TTC = 3322
 
 
 def get_access_token():
@@ -110,7 +111,7 @@ def get_order_list(date_from, date_to, conn):
                             if result["payment"].get("payment_time") == 0
                             else result["payment"].get("payment_time")
                         ),
-                        "avg_logis_expense": 3385,
+                        "mode_logis_expense": MODE_LOGIS_EXPENSE_TTC,
                     }
                     order_list.append(dic)
                     order_no_list.add(result["order_no"])
