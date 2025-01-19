@@ -30,7 +30,7 @@ def insert_imweb_order_table(conn, order_list, date):
             period_discount,
             payment_amount,
             payment_time,
-            mode_logis_expense
+            mode_shipping
         ) VALUES (
             %(type)s,
             %(order_code)s,
@@ -57,7 +57,7 @@ def insert_imweb_order_table(conn, order_list, date):
             %(period_discount)s,
             %(payment_amount)s,
             FROM_UNIXTIME(%(payment_time)s),
-            %(mode_logis_expense)s
+            %(mode_shipping)s
         )
     """
     try:
