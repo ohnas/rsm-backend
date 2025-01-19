@@ -13,8 +13,8 @@ from db import (
 
 DATE_FROM = "2025-01-17"
 DATE_TO = "2025-01-17"
-DATE_SINCE = "2025-01-17"
-DATE_UNTILL = "2025-01-17"
+# DATE_SINCE = "2025-01-17"
+# DATE_UNTILL = "2025-01-17"
 DATE = "2025-01-17"
 
 load_dotenv()
@@ -35,13 +35,13 @@ try:
     )
 
     access_token, order_list, order_no_list = get_order_list(DATE_FROM, DATE_TO, conn)
-    order_detail_list = get_order_detail_list(order_no_list, access_token, conn, DATE)
+    # order_detail_list = get_order_detail_list(order_no_list, access_token, conn, DATE)
     insert_imweb_order_table(conn, order_list, DATE)
-    insert_imweb_order_detail_table(conn, order_detail_list, DATE)
-    meta_list = get_meta(conn, DATE_SINCE, DATE_UNTILL)
-    insert_meta_table(conn, meta_list, DATE)
-    exchange_rate_data = get_krw_exchange_rate(conn, DATE)
-    insert_exchange_rate_table(conn, exchange_rate_data, DATE)
+    # insert_imweb_order_detail_table(conn, order_detail_list, DATE)
+    # meta_list = get_meta(conn, DATE_SINCE, DATE_UNTILL)
+    # insert_meta_table(conn, meta_list, DATE)
+    # exchange_rate_data = get_krw_exchange_rate(conn, DATE)
+    # insert_exchange_rate_table(conn, exchange_rate_data, DATE)
 
 finally:
     conn.close()
