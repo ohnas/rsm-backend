@@ -66,7 +66,7 @@ def insert_argo_return_table(conn):
     if records:
         for record in records:
             dic = {
-                "date": record[0].strftime("%Y-%m"),
+                "date": record[0],
                 "return_tracking_no": record[1],
                 "net_amount": record[2],
                 "brand": record[3],
@@ -97,7 +97,7 @@ def insert_argo_storage_table(conn):
     if records:
         for record in records:
             dic = {
-                "date": record[0].strftime("%Y-%m"),
+                "date": record[0],
                 "sku_name": record[1],
                 "sku_barcode": record[2],
                 "net_amount": record[3],
