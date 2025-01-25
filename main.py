@@ -11,13 +11,30 @@ from db import (
     insert_exchange_rate_table,
 )
 
-DATE_FROM = "2025-01-24"
-DATE_TO = "2025-01-24"
-DATE_SINCE = "2025-01-24"
-DATE_UNTILL = "2025-01-24"
+load_dotenv()
+
 DATE = "2025-01-24"
 
-load_dotenv()
+ttc_info = {
+    "imweb_api_key": os.getenv("IMWEB_API_KEY_TTC"),
+    "imweb_api_secret": os.getenv("IMWEB_API_SECRET_TTC"),
+    "meta_act_id": os.getenv("META_ACT_ID_TTC"),
+    "meta_app_accesstoken": os.getenv("META_APP_ACCESSTOKEN"),
+    "order_version": "v2",
+    "mode_shipping": 3322,
+}
+
+anddle_info = {
+    "imweb_api_key": os.getenv("IMWEB_API_KEY_ANDDLE"),
+    "imweb_api_secret": os.getenv("IMWEB_API_SECRET_ANDDLE"),
+    "meta_act_id": os.getenv("META_ACT_ID_ANDDLE"),
+    "meta_app_accesstoken": os.getenv("META_APP_ACCESSTOKEN"),
+    "order_version": "v2",
+    "mode_shipping": 3102,
+}
+
+# DATE_SINCE = "2025-01-24"
+# DATE_UNTILL = "2025-01-24"
 
 CLOUD_DB_HOST = os.getenv("CLOUD_DB_HOST")
 CLOUD_DB_USER = os.getenv("CLOUD_DB_USER")
@@ -34,14 +51,14 @@ try:
         cursorclass=pymysql.cursors.DictCursor,
     )
 
-    access_token, order_list, order_no_list = get_order_list(DATE_FROM, DATE_TO, conn)
+    access_token, order_list, order_no_list = get_order_list(DATE, anddle_info, conn)
     order_detail_list = get_order_detail_list(order_no_list, access_token, conn, DATE)
-    insert_imweb_order_table(conn, order_list, DATE)
-    insert_imweb_order_detail_table(conn, order_detail_list, DATE)
-    meta_list = get_meta(conn, DATE_SINCE, DATE_UNTILL)
-    insert_meta_table(conn, meta_list, DATE)
-    exchange_rate_data = get_krw_exchange_rate(conn, DATE)
-    insert_exchange_rate_table(conn, exchange_rate_data, DATE)
+    # insert_imweb_order_table(conn, order_list, DATE)
+    # insert_imweb_order_detail_table(conn, order_detail_list, DATE)
+    # meta_list = get_meta(conn, DATE_SINCE, DATE_UNTILL)
+    # insert_meta_table(conn, meta_list, DATE)
+    # exchange_rate_data = get_krw_exchange_rate(conn, DATE)
+    # insert_exchange_rate_table(conn, exchange_rate_data, DATE)
 
 finally:
     conn.close()
