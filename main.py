@@ -11,11 +11,11 @@ from db import (
     insert_exchange_rate_table,
 )
 
-DATE_FROM = "2025-01-18"
-DATE_TO = "2025-01-18"
-DATE_SINCE = "2025-01-18"
-DATE_UNTILL = "2025-01-18"
-DATE = "2025-01-18"
+DATE_FROM = "2025-01-24"
+DATE_TO = "2025-01-24"
+DATE_SINCE = "2025-01-24"
+DATE_UNTILL = "2025-01-24"
+DATE = "2025-01-24"
 
 load_dotenv()
 
