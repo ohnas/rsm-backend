@@ -19,10 +19,10 @@ def get_timestamps(date):
     return timestamp_from, timestamp_to
 
 
-def temp_get_timestamps(date_to, date_from):
+def temp_get_timestamps(date_from, date_to):
     local_timezone = timezone(timedelta(hours=9))
-    date_from_str = f"{date_to} 00:00:00"
-    date_to_str = f"{date_from} 23:59:59"
+    date_from_str = f"{date_from} 00:00:00"
+    date_to_str = f"{date_to} 23:59:59"
     # 문자열을 datetime 객체로 변환 (로컬 타임존 적용)
     local_time_from = datetime.strptime(date_from_str, "%Y-%m-%d %H:%M:%S").replace(
         tzinfo=local_timezone

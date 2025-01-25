@@ -1,6 +1,6 @@
 import requests
 import time
-from tools import get_timestamps, log_error, insert_log
+from tools import get_timestamps, log_error, insert_log, temp_get_timestamps
 
 
 def get_access_token(brand_info):
@@ -19,10 +19,11 @@ def get_access_token(brand_info):
         log_error(e)
 
 
-def get_order_list(date, brand_info, conn):
+def get_order_list(date_to, date_from, brand_info, conn):
     access_token = get_access_token(brand_info)
     try:
-        timestamp_from, timestamp_to = get_timestamps(date)
+        # timestamp_from, timestamp_to = get_timestamps(date)
+        timestamp_from, timestamp_to = temp_get_timestamps(date_to, date_from)
         types = ["normal", "npay"]
         order_list = []
         order_no_list = set()
@@ -108,8 +109,8 @@ def get_order_list(date, brand_info, conn):
                     order_no_list.add(result["order_no"])
         print("order list cnt : ", len(order_list))
         print("order no list cnt : ", len(order_no_list))
-        print("success : order list from : ", date)
-        print("success : order list to : ", date)
+        print("success : order list from : ", date_to)
+        print("success : order list to : ", date_from)
         # insert_log(
         #     conn,
         #     date,
@@ -221,8 +222,10 @@ def get_order_detail_list(date, order_no_list, access_token, brand_info, conn):
                         "prod_deliv_price_type": result["items"][0]["delivery"].get(
                             "deliv_price_type"
                         ),
-                        "option_is_mix": result["items"][0]["options"][0][0].get(
-                            "is_mix"
+                        "option_is_mix": (
+                            None
+                            if result["items"][0].get("options") == None
+                            else result["items"][0]["options"][0][0]["is_mix"]
                         ),
                         "option_detail_code": (
                             None
