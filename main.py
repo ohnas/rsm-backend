@@ -13,7 +13,7 @@ from db import (
 
 load_dotenv()
 
-DATE = "2025-01-24"
+DATE = "2024-08-01"
 
 ttc_info = {
     "imweb_api_key": os.getenv("IMWEB_API_KEY_TTC"),
