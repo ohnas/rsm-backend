@@ -1,10 +1,14 @@
 from tools import log_error, insert_log
 
 
-def insert_imweb_order_table(conn, order_list, date):
+def insert_imweb_order_table(date, brand_info, order_list, conn):
+    allowed_tables = ["imweb_order_ttc", "imweb_order_anddle"]
+    
+    if brand_info["imweb_order_table"] not in allowed_tables:
+        raise ValueError(f"Invalid table name: {brand_info["imweb_order_table"]}")
 
-    sql = """
-        INSERT INTO imweb_order_ttc (
+    sql = f"""
+        INSERT INTO {brand_info["imweb_order_table"]} (
             type,
             order_code,
             order_no,
@@ -65,25 +69,29 @@ def insert_imweb_order_table(conn, order_list, date):
             cursor.executemany(sql, order_list)
 
         conn.commit()
-        print("success : insert imweb_order_table")
-        insert_log(
-            conn,
-            date,
-            "SUCCESS",
-            f"Order inserted for {len(order_list)}",
-            "imweb",
-            "TTC",
-        )
+        print(f"success : insert {brand_info["imweb_order_table"]}")
+        # insert_log(
+        #     conn,
+        #     date,
+        #     "SUCCESS",
+        #     f"Order inserted for {len(order_list)}",
+        #     "imweb",
+        #     "TTC",
+        # )
     except Exception as e:
         print("fail")
         log_error(e)
-        insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
+        # insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
 
 
-def insert_imweb_order_detail_table(conn, order_detail_list, date):
+def insert_imweb_order_detail_table(date, brand_info, order_detail_list, conn):
+    allowed_tables = ["imweb_order_detail_ttc", "imweb_order_detail_anddle"]
+    
+    if brand_info["imweb_order_detail_table"] not in allowed_tables:
+        raise ValueError(f"Invalid table name: {brand_info["imweb_order_detail_table"]}")
 
-    sql = """
-        INSERT INTO imweb_order_detail_ttc (
+    sql = f"""
+        INSERT INTO {brand_info["imweb_order_detail_table"]} (
             order_no,
             order_detail_no,
             channel_order_item_no,
@@ -176,19 +184,19 @@ def insert_imweb_order_detail_table(conn, order_detail_list, date):
             cursor.executemany(sql, order_detail_list)
 
         conn.commit()
-        print("success : insert imweb_order_detail_table")
-        insert_log(
-            conn,
-            date,
-            "SUCCESS",
-            f"Order inserted for {len(order_detail_list)}",
-            "imweb",
-            "TTC",
-        )
+        print(f"success : insert {brand_info["imweb_order_detail_table"]}")
+        # insert_log(
+        #     conn,
+        #     date,
+        #     "SUCCESS",
+        #     f"Order inserted for {len(order_detail_list)}",
+        #     "imweb",
+        #     "TTC",
+        # )
     except Exception as e:
         print("fail")
         log_error(e)
-        insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
+        # insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
 
 
 def insert_meta_table(conn, meta_list, date):
@@ -276,18 +284,18 @@ def insert_meta_table(conn, meta_list, date):
 
         conn.commit()
         print("success : insert meta_ttc_table")
-        insert_log(
-            conn,
-            date,
-            "SUCCESS",
-            f"meta inserted for {len(meta_list)}",
-            "meta",
-            "TTC",
-        )
+        # insert_log(
+        #     conn,
+        #     date,
+        #     "SUCCESS",
+        #     f"meta inserted for {len(meta_list)}",
+        #     "meta",
+        #     "TTC",
+        # )
     except Exception as e:
         print("fail")
         log_error(e)
-        insert_log(conn, date, "FAIL", str(e), "meta", "TTC")
+        # insert_log(conn, date, "FAIL", str(e), "meta", "TTC")
 
 
 def insert_exchange_rate_table(conn, exchange_rate_data, date):
