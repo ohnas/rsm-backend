@@ -52,7 +52,9 @@ try:
     )
 
     access_token, order_list, order_no_list = get_order_list(DATE, anddle_info, conn)
-    order_detail_list = get_order_detail_list(order_no_list, access_token, conn, DATE)
+    order_detail_list = get_order_detail_list(
+        DATE, order_no_list, access_token, anddle_info, conn
+    )
     # insert_imweb_order_table(conn, order_list, DATE)
     # insert_imweb_order_detail_table(conn, order_detail_list, DATE)
     # meta_list = get_meta(conn, DATE_SINCE, DATE_UNTILL)

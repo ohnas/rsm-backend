@@ -1,23 +1,14 @@
-from dotenv import load_dotenv
-import os
 import requests
 import time
 from tools import get_timestamps, log_error, insert_log
 
-load_dotenv()
 
-API_KEY = os.getenv("IMWEB_API_KEY_TTC")
-API_SECRET = os.getenv("IMWEB_API_SECRET_TTC")
-ORDER_VERSION = "v2"
-MODE_SHIPPING = 3322
-
-
-def get_access_token():
+def get_access_token(brand_info):
     try:
         URL = "https://api.imweb.me/v2/auth"
         params = {
-            "key": API_KEY,
-            "secret": API_SECRET,
+            "key": brand_info["imweb_api_key"],
+            "secret": brand_info["imweb_api_secret"],
         }
         response = requests.get(URL, params=params)
         json_data = response.json()
@@ -28,10 +19,10 @@ def get_access_token():
         log_error(e)
 
 
-def get_order_list(date_from, date_to, conn):
-    access_token = get_access_token()
+def get_order_list(date, brand_info, conn):
+    access_token = get_access_token(brand_info)
     try:
-        timestamp_from, timestamp_to = get_timestamps(date_from, date_to)
+        timestamp_from, timestamp_to = get_timestamps(date)
         types = ["normal", "npay"]
         order_list = []
         order_no_list = set()
@@ -48,7 +39,7 @@ def get_order_list(date_from, date_to, conn):
                 "order_date_from": timestamp_from,
                 "order_date_to": timestamp_to,
                 "type": type,
-                "order_version": ORDER_VERSION,
+                "order_version": brand_info["order_version"],
             }
             response = requests.get(URL, headers=headers, params=params)
             json_data = response.json()
@@ -66,7 +57,7 @@ def get_order_list(date_from, date_to, conn):
                         "order_date_from": timestamp_from,
                         "order_date_to": timestamp_to,
                         "type": type,
-                        "order_version": ORDER_VERSION,
+                        "order_version": brand_info["order_version"],
                         "offset": current_page,
                     }
                     response = requests.get(URL, headers=headers, params=params)
@@ -111,29 +102,29 @@ def get_order_list(date_from, date_to, conn):
                             if result["payment"].get("payment_time") == 0
                             else result["payment"].get("payment_time")
                         ),
-                        "mode_shipping": MODE_SHIPPING,
+                        "mode_shipping": brand_info["mode_shipping"],
                     }
                     order_list.append(dic)
                     order_no_list.add(result["order_no"])
         print("order list cnt : ", len(order_list))
         print("order no list cnt : ", len(order_no_list))
-        print("success : order list from : ", date_from)
-        print("success : order list to : ", date_to)
-        insert_log(
-            conn,
-            date_from,
-            "SUCCESS",
-            f"Order fetched for {len(order_list)}",
-            "imweb",
-            "TTC",
-        )
+        print("success : order list from : ", date)
+        print("success : order list to : ", date)
+        # insert_log(
+        #     conn,
+        #     date,
+        #     "SUCCESS",
+        #     f"Order fetched for {len(order_list)}",
+        #     "imweb",
+        #     "TTC",
+        # )
         return access_token, order_list, list(order_no_list)
     except Exception as e:
         log_error(e)
-        insert_log(conn, date_from, "FAIL", str(e), "imweb", "TTC")
+        # insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
 
 
-def get_order_detail_list(order_no_list, access_token, conn, date):
+def get_order_detail_list(date, order_no_list, access_token, brand_info, conn):
     try:
         order_detail_list = []
         if order_no_list:
@@ -146,7 +137,7 @@ def get_order_detail_list(order_no_list, access_token, conn, date):
                     "version": "latest",
                 }
                 params = {
-                    "order_version": ORDER_VERSION,
+                    "order_version": brand_info["order_version"],
                 }
                 # 코드가 200이 될 때까지 반복적으로 요청
                 max_retries = 5
@@ -313,15 +304,15 @@ def get_order_detail_list(order_no_list, access_token, conn, date):
                     order_detail_list.append(dic)
 
         print("success : order detail list cnt : ", len(order_detail_list))
-        insert_log(
-            conn,
-            date,
-            "SUCCESS",
-            f"Order details fetched for {len(order_detail_list)}",
-            "imweb",
-            "TTC",
-        )
+        # insert_log(
+        #     conn,
+        #     date,
+        #     "SUCCESS",
+        #     f"Order details fetched for {len(order_detail_list)}",
+        #     "imweb",
+        #     "TTC",
+        # )
         return order_detail_list
     except Exception as e:
         log_error(e)
-        insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
+        # insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
