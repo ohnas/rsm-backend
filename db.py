@@ -3,12 +3,12 @@ from tools import log_error, insert_log
 
 def insert_imweb_order_table(date, brand_info, order_list, conn):
     allowed_tables = ["imweb_order_ttc", "imweb_order_anddle"]
-    
+
     if brand_info["imweb_order_table"] not in allowed_tables:
-        raise ValueError(f"Invalid table name: {brand_info["imweb_order_table"]}")
+        raise ValueError(f"Invalid table name: {brand_info['imweb_order_table']}")
 
     sql = f"""
-        INSERT INTO {brand_info["imweb_order_table"]} (
+        INSERT INTO {brand_info['imweb_order_table']} (
             type,
             order_code,
             order_no,
@@ -69,7 +69,7 @@ def insert_imweb_order_table(date, brand_info, order_list, conn):
             cursor.executemany(sql, order_list)
 
         conn.commit()
-        print(f"success : insert {brand_info["imweb_order_table"]}")
+        print(f"success : insert {brand_info['imweb_order_table']}")
         # insert_log(
         #     conn,
         #     date,
@@ -86,12 +86,14 @@ def insert_imweb_order_table(date, brand_info, order_list, conn):
 
 def insert_imweb_order_detail_table(date, brand_info, order_detail_list, conn):
     allowed_tables = ["imweb_order_detail_ttc", "imweb_order_detail_anddle"]
-    
+
     if brand_info["imweb_order_detail_table"] not in allowed_tables:
-        raise ValueError(f"Invalid table name: {brand_info["imweb_order_detail_table"]}")
+        raise ValueError(
+            f"Invalid table name: {brand_info['imweb_order_detail_table']}"
+        )
 
     sql = f"""
-        INSERT INTO {brand_info["imweb_order_detail_table"]} (
+        INSERT INTO {brand_info['imweb_order_detail_table']} (
             order_no,
             order_detail_no,
             channel_order_item_no,
@@ -184,7 +186,7 @@ def insert_imweb_order_detail_table(date, brand_info, order_detail_list, conn):
             cursor.executemany(sql, order_detail_list)
 
         conn.commit()
-        print(f"success : insert {brand_info["imweb_order_detail_table"]}")
+        print(f"success : insert {brand_info['imweb_order_detail_table']}")
         # insert_log(
         #     conn,
         #     date,

@@ -24,6 +24,8 @@ ttc_info = {
     "meta_app_accesstoken": os.getenv("META_APP_ACCESSTOKEN"),
     "order_version": "v2",
     "mode_shipping": 3322,
+    "imweb_order_table": "imweb_order_ttc",
+    "imweb_order_detail_table": "imweb_order_detail_ttc",
 }
 
 anddle_info = {
@@ -33,6 +35,8 @@ anddle_info = {
     "meta_app_accesstoken": os.getenv("META_APP_ACCESSTOKEN"),
     "order_version": "v2",
     "mode_shipping": 3102,
+    "imweb_order_table": "imweb_order_anddle",
+    "imweb_order_detail_table": "imweb_order_detail_anddle",
 }
 
 # DATE_SINCE = "2025-01-24"
@@ -59,8 +63,8 @@ try:
     order_detail_list = get_order_detail_list(
         DATE_TO, order_no_list, access_token, anddle_info, conn
     )
-    # insert_imweb_order_table(conn, order_list, DATE)
-    # insert_imweb_order_detail_table(conn, order_detail_list, DATE)
+    insert_imweb_order_table(DATE_TO, anddle_info, order_list, conn)
+    insert_imweb_order_detail_table(DATE_TO, anddle_info, order_detail_list, conn)
     # meta_list = get_meta(conn, DATE_SINCE, DATE_UNTILL)
     # insert_meta_table(conn, meta_list, DATE)
     # exchange_rate_data = get_krw_exchange_rate(conn, DATE)
