@@ -2,7 +2,7 @@ import requests
 from tools import log_error, insert_log
 
 
-def get_krw_exchange_rate(conn, date):
+def get_krw_exchange_rate(date, conn):
     try:
         URL = f"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@{date}/v1/currencies/usd.json"
 

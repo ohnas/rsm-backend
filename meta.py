@@ -132,16 +132,16 @@ def get_meta(date_since, date_untill, brand_info, conn):
         print(f"Total records meta data: {len(meta_list)}")
         print("meta list success from : ", date_since)
         print("meta list success to : ", date_untill)
-        # insert_log(
-        #     conn,
-        #     date_since,
-        #     "SUCCESS",
-        #     f"meta fetched for {len(meta_list)}",
-        #     "meta",
-        #     "TTC",
-        # )
+        insert_log(
+            conn,
+            date_since,
+            "SUCCESS",
+            f"meta fetched for {len(meta_list)}",
+            "meta",
+            f"{brand_info['brand']}",
+        )
         return meta_list
 
     except Exception as e:
         log_error(e)
-        # insert_log(conn, date_since, "FAIL", str(e), "meta", "TTC")
+        insert_log(conn, date_since, "FAIL", str(e), "meta", f"{brand_info['brand']}")

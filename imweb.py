@@ -111,18 +111,18 @@ def get_order_list(date_to, date_from, brand_info, conn):
         print("order no list cnt : ", len(order_no_list))
         print("success : order list from : ", date_to)
         print("success : order list to : ", date_from)
-        # insert_log(
-        #     conn,
-        #     date,
-        #     "SUCCESS",
-        #     f"Order fetched for {len(order_list)}",
-        #     "imweb",
-        #     "TTC",
-        # )
+        insert_log(
+            conn,
+            date_to,
+            "SUCCESS",
+            f"Order fetched for {len(order_list)}",
+            "imweb",
+            f"{brand_info['brand']}",
+        )
         return access_token, order_list, list(order_no_list)
     except Exception as e:
         log_error(e)
-        # insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
+        insert_log(conn, date_to, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
 
 
 def get_order_detail_list(date, order_no_list, access_token, brand_info, conn):
@@ -307,15 +307,15 @@ def get_order_detail_list(date, order_no_list, access_token, brand_info, conn):
                     order_detail_list.append(dic)
 
         print("success : order detail list cnt : ", len(order_detail_list))
-        # insert_log(
-        #     conn,
-        #     date,
-        #     "SUCCESS",
-        #     f"Order details fetched for {len(order_detail_list)}",
-        #     "imweb",
-        #     "TTC",
-        # )
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            f"Order details fetched for {len(order_detail_list)}",
+            "imweb",
+            f"{brand_info['brand']}",
+        )
         return order_detail_list
     except Exception as e:
         log_error(e)
-        # insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
+        insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
