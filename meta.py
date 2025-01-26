@@ -1,14 +1,7 @@
-from dotenv import load_dotenv
 from datetime import datetime
-import os
 import json
 import requests
 from tools import log_error, insert_log
-
-load_dotenv()
-
-META_ACT_ID_TTC = os.getenv("META_ACT_ID_TTC")
-META_APP_ACCESSTOKEN = os.getenv("META_APP_ACCESSTOKEN")
 
 
 def to_int(value):
@@ -45,14 +38,16 @@ def get_action_value_from_values(action_values, action_type):
     )
 
 
-def get_meta(conn, date_since, date_untill):
+def get_meta(date_since, date_untill, brand_info, conn):
     try:
         ver = "v21.0"
         insights = "account_currency,account_id,account_name,campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,objective,spend,cost_per_inline_link_click,impressions,reach,frequency,cpm,cpp,created_time,updated_time,actions,action_values"
-        url = f"https://graph.facebook.com/{ver}/act_{META_ACT_ID_TTC}/insights"
+        url = (
+            f"https://graph.facebook.com/{ver}/act_{brand_info['meta_act_id']}/insights"
+        )
         params = {
             "fields": insights,
-            "access_token": META_APP_ACCESSTOKEN,
+            "access_token": brand_info["meta_app_accesstoken"],
             "level": "ad",
             "time_range": json.dumps(
                 {
@@ -137,16 +132,16 @@ def get_meta(conn, date_since, date_untill):
         print(f"Total records meta data: {len(meta_list)}")
         print("meta list success from : ", date_since)
         print("meta list success to : ", date_untill)
-        insert_log(
-            conn,
-            date_since,
-            "SUCCESS",
-            f"meta fetched for {len(meta_list)}",
-            "meta",
-            "TTC",
-        )
+        # insert_log(
+        #     conn,
+        #     date_since,
+        #     "SUCCESS",
+        #     f"meta fetched for {len(meta_list)}",
+        #     "meta",
+        #     "TTC",
+        # )
         return meta_list
 
     except Exception as e:
         log_error(e)
-        insert_log(conn, date_since, "FAIL", str(e), "meta", "TTC")
+        # insert_log(conn, date_since, "FAIL", str(e), "meta", "TTC")

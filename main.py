@@ -13,8 +13,8 @@ from db import (
 
 load_dotenv()
 
-DATE_TO = "2024-09-01"
-DATE_FROM = "2024-09-30"
+DATE_TO = "2025-01-16"
+DATE_FROM = "2025-01-24"
 
 
 ttc_info = {
