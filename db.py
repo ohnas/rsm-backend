@@ -201,10 +201,14 @@ def insert_imweb_order_detail_table(date, brand_info, order_detail_list, conn):
         # insert_log(conn, date, "FAIL", str(e), "imweb", "TTC")
 
 
-def insert_meta_table(conn, meta_list, date):
+def insert_meta_table(date, brand_info, meta_list, conn):
+    allowed_tables = ["meta_ttc", "meta_anddle"]
 
-    sql = """
-        INSERT INTO meta_ttc (
+    if brand_info["meta_table"] not in allowed_tables:
+        raise ValueError(f"Invalid table name: {brand_info['meta_table']}")
+
+    sql = f"""
+        INSERT INTO {brand_info['meta_table']} (
             account_currency,
             account_id,
             account_name,
@@ -285,7 +289,7 @@ def insert_meta_table(conn, meta_list, date):
             cursor.executemany(sql, meta_list)
 
         conn.commit()
-        print("success : insert meta_ttc_table")
+        print(f"success : insert {brand_info['meta_table']}")
         # insert_log(
         #     conn,
         #     date,

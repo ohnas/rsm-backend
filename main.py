@@ -13,9 +13,10 @@ from db import (
 
 load_dotenv()
 
-DATE_TO = "2025-01-16"
-DATE_FROM = "2025-01-24"
-
+# DATE_TO = "2025-01-16"
+# DATE_FROM = "2025-01-24"
+DATE_SINCE = "2024-10-01"
+DATE_UNTILL = "2024-10-31"
 
 ttc_info = {
     "imweb_api_key": os.getenv("IMWEB_API_KEY_TTC"),
@@ -26,6 +27,7 @@ ttc_info = {
     "mode_shipping": 3322,
     "imweb_order_table": "imweb_order_ttc",
     "imweb_order_detail_table": "imweb_order_detail_ttc",
+    "meta_table": "meta_ttc",
 }
 
 anddle_info = {
@@ -37,10 +39,9 @@ anddle_info = {
     "mode_shipping": 3102,
     "imweb_order_table": "imweb_order_anddle",
     "imweb_order_detail_table": "imweb_order_detail_anddle",
+    "meta_table": "meta_anddle",
 }
 
-# DATE_SINCE = "2025-01-24"
-# DATE_UNTILL = "2025-01-24"
 
 CLOUD_DB_HOST = os.getenv("CLOUD_DB_HOST")
 CLOUD_DB_USER = os.getenv("CLOUD_DB_USER")
@@ -57,16 +58,16 @@ try:
         cursorclass=pymysql.cursors.DictCursor,
     )
 
-    access_token, order_list, order_no_list = get_order_list(
-        DATE_TO, DATE_FROM, anddle_info, conn
-    )
-    order_detail_list = get_order_detail_list(
-        DATE_TO, order_no_list, access_token, anddle_info, conn
-    )
-    insert_imweb_order_table(DATE_TO, anddle_info, order_list, conn)
-    insert_imweb_order_detail_table(DATE_TO, anddle_info, order_detail_list, conn)
-    # meta_list = get_meta(conn, DATE_SINCE, DATE_UNTILL)
-    # insert_meta_table(conn, meta_list, DATE)
+    # access_token, order_list, order_no_list = get_order_list(
+    #     DATE_TO, DATE_FROM, anddle_info, conn
+    # )
+    # order_detail_list = get_order_detail_list(
+    #     DATE_TO, order_no_list, access_token, anddle_info, conn
+    # )
+    # insert_imweb_order_table(DATE_TO, anddle_info, order_list, conn)
+    # insert_imweb_order_detail_table(DATE_TO, anddle_info, order_detail_list, conn)
+    meta_list = get_meta(DATE_SINCE, DATE_UNTILL, anddle_info, conn)
+    insert_meta_table(DATE_SINCE, anddle_info, meta_list, conn)
     # exchange_rate_data = get_krw_exchange_rate(conn, DATE)
     # insert_exchange_rate_table(conn, exchange_rate_data, DATE)
 
