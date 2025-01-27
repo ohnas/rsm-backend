@@ -13,11 +13,11 @@ from db import (
 
 load_dotenv()
 
-DATE_TO = "2025-01-25"
-DATE_FROM = "2025-01-25"
-DATE_SINCE = "2025-01-25"
-DATE_UNTILL = "2025-01-25"
-DATE = "2025-01-25"
+DATE_TO = "2025-01-26"
+DATE_FROM = "2025-01-26"
+DATE_SINCE = "2025-01-26"
+DATE_UNTILL = "2025-01-26"
+DATE = "2025-01-26"
 
 brand_info_list = [
     {
