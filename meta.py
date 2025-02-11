@@ -38,7 +38,7 @@ def get_action_value_from_values(action_values, action_type):
     )
 
 
-def get_meta(date_since, date_untill, brand_info, conn):
+def get_meta(date, brand_info, conn):
     try:
         ver = "v21.0"
         insights = "account_currency,account_id,account_name,campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,objective,spend,cost_per_inline_link_click,impressions,reach,frequency,cpm,cpp,created_time,updated_time,actions,action_values"
@@ -51,8 +51,8 @@ def get_meta(date_since, date_untill, brand_info, conn):
             "level": "ad",
             "time_range": json.dumps(
                 {
-                    "since": date_since,
-                    "until": date_untill,
+                    "since": date,
+                    "until": date,
                 }
             ),
             "time_increment": 1,
@@ -130,18 +130,18 @@ def get_meta(date_since, date_untill, brand_info, conn):
                 meta_list.append(dic)
         print(f"meta total records fetched: {len(results)}")
         print(f"Total records meta data: {len(meta_list)}")
-        print("meta list success from : ", date_since)
-        print("meta list success to : ", date_untill)
-        # insert_log(
-        #     conn,
-        #     date_since,
-        #     "SUCCESS",
-        #     f"meta fetched for {len(meta_list)}",
-        #     "meta",
-        #     f"{brand_info['brand']}",
-        # )
+        print("meta list success from : ", date)
+        print("meta list success to : ", date)
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            f"meta fetched for {len(meta_list)}",
+            "meta",
+            f"{brand_info['brand']}",
+        )
         return meta_list
 
     except Exception as e:
         log_error(e)
-        # insert_log(conn, date_since, "FAIL", str(e), "meta", f"{brand_info['brand']}")
+        insert_log(conn, date, "FAIL", str(e), "meta", f"{brand_info['brand']}")

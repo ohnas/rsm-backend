@@ -294,18 +294,18 @@ def insert_meta_table(date, brand_info, meta_list, conn):
 
         conn.commit()
         print(f"success : insert {brand_info['meta_table']}")
-        # insert_log(
-        #     conn,
-        #     date,
-        #     "SUCCESS",
-        #     f"meta inserted for {len(meta_list)}",
-        #     "meta",
-        #     f"{brand_info['brand']}",
-        # )
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            f"meta inserted for {len(meta_list)}",
+            "meta",
+            f"{brand_info['brand']}",
+        )
     except Exception as e:
         print("fail")
         log_error(e)
-        # insert_log(conn, date, "FAIL", str(e), "meta", f"{brand_info['brand']}")
+        insert_log(conn, date, "FAIL", str(e), "meta", f"{brand_info['brand']}")
 
 
 def insert_exchange_rate_table(date, exchange_rate_data, conn):
