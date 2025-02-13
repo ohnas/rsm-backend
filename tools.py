@@ -46,6 +46,13 @@ def temp_get_timestamps(date_from, date_to):
     return timestamp_from, timestamp_to
 
 
+def get_datetime_string(date_from, date_to, timezone_offset="+09:00"):
+    date_from = f"{date_from}T00:00:00.000{timezone_offset}"
+    date_to = f"{date_to}T23:59:59.999{timezone_offset}"
+
+    return date_from, date_to
+
+
 def log_error(e):
     """현재 함수 이름과 오류 메시지를 동적으로 출력"""
     function_name = inspect.currentframe().f_back.f_code.co_name
