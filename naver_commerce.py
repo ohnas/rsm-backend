@@ -1,31 +1,23 @@
-from dotenv import load_dotenv
-import os
 import time
 import bcrypt
 import pybase64
 import requests
-from tools import log_error, get_datetime_string
-
-load_dotenv()
-
-NAVER_COMMERCE_API_ID = os.getenv("NAVER_COMMERCE_API_ID")
-NAVER_COMMERCE_API_SECRET = os.getenv("NAVER_COMMERCE_API_SECRET")
-DATE_FROM = "2023-05-01"
-DATE_TO = "2023-05-01"
+from tools import log_error, get_datetime_string, transfer_iso8601_timestamp
 
 
-def get_access_token():
+def get_access_token(brand_info):
     try:
         timestamp = int(time.time() * 1000)
-        password = NAVER_COMMERCE_API_ID + "_" + str(timestamp)
+        password = brand_info["smartstore_api_id"] + "_" + str(timestamp)
         hashed = bcrypt.hashpw(
-            password.encode("utf-8"), NAVER_COMMERCE_API_SECRET.encode("utf-8")
+            password.encode("utf-8"),
+            brand_info["smartstore_api_secret"].encode("utf-8"),
         )
         secret_sign = pybase64.standard_b64encode(hashed).decode("utf-8")
         URL = "https://api.commerce.naver.com/external/v1/oauth2/token"
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         data = {
-            "client_id": NAVER_COMMERCE_API_ID,
+            "client_id": brand_info["smartstore_api_id"],
             "timestamp": timestamp,
             "grant_type": "client_credentials",
             "client_secret_sign": secret_sign,
@@ -40,10 +32,10 @@ def get_access_token():
         log_error(e)
 
 
-def get_order_list():
-    access_token = get_access_token()
+def get_order_list(date_from, date_to, brand_info, conn):
+    access_token = get_access_token(brand_info)
     try:
-        date_from, date_to = get_datetime_string(DATE_FROM, DATE_TO)
+        date_from, date_to = get_datetime_string(date_from, date_to)
         URL = (
             "https://api.commerce.naver.com/external/v1/pay-order/seller/product-orders"
         )
@@ -57,14 +49,18 @@ def get_order_list():
         json_data = response.json()
         results = json_data["data"]["contents"]
         order_list = []
-        print(len(results))
+
         if results:
             for result in results:
                 dic = {
                     "product_order_id": result["productOrderId"],
                     "order_id": result["content"]["order"]["orderId"],
-                    "order_date": result["content"]["order"]["orderDate"],
-                    "payment_date": result["content"]["order"]["paymentDate"],
+                    "order_date": transfer_iso8601_timestamp(
+                        result["content"]["order"]["orderDate"]
+                    ),
+                    "payment_date": transfer_iso8601_timestamp(
+                        result["content"]["order"]["paymentDate"]
+                    ),
                     "payment_means": result["content"]["order"]["paymentMeans"],
                     "pay_location_type": result["content"]["order"]["payLocationType"],
                     "order_discount_amount": result["content"]["order"][
@@ -185,13 +181,13 @@ def get_order_list():
                     "expected_settlement_amount": result["content"]["productOrder"][
                         "expectedSettlementAmount"
                     ],
+                    "mode_shipping": brand_info["mode_shipping"],
                 }
                 order_list.append(dic)
         print("order list cnt : ", len(order_list))
         print("success : order list from : ", date_from)
         print("success : order list to : ", date_to)
+
+        return order_list
     except Exception as e:
         log_error(e)
-
-
-get_order_list()

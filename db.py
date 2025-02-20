@@ -337,3 +337,140 @@ def insert_exchange_rate_table(date, exchange_rate_data, conn):
         print("fail")
         log_error(e)
         insert_log(conn, date, "FAIL", str(e), "exchange_rate", "-")
+
+
+def insert_smartstore_order_table(date, brand_info, order_list, conn):
+    allowed_tables = ["smartstore_order_undirty"]
+
+    if brand_info["smartstore_order_table"] not in allowed_tables:
+        raise ValueError(f"Invalid table name: {brand_info['smartstore_order_table']}")
+
+    sql = f"""
+        INSERT INTO {brand_info['smartstore_order_table']} (
+            product_order_id,
+            order_id,
+            order_date,
+            payment_date,
+            payment_means,
+            pay_location_type,
+            order_discount_amount,
+            general_payment_amount,
+            naver_mileage_payment_amount,
+            charge_amount_payment_amount,
+            pay_later_payment_amount,
+            quantity,
+            initial_quantity,
+            remain_quantity,
+            total_product_amount,
+            initial_product_amount,
+            remain_product_amount,
+            total_payment_amount,
+            initial_payment_amount,
+            remain_payment_amount,
+            product_order_status,
+            product_id,
+            product_name,
+            unit_price,
+            product_class,
+            original_product_id,
+            merchant_channel_id,
+            item_no,
+            product_option,
+            option_code,
+            option_price,
+            mall_id,
+            inflow_path,
+            inflow_path_add,
+            product_discount_amount,
+            initial_product_discount_amount,
+            remain_product_discount_amount,
+            seller_burden_discount_amount,
+            product_imediate_discount_amount,
+            seller_burden_imediate_discount_amount,
+            delivery_fee_amount,
+            delivery_policy_type,
+            section_delivery_fee,
+            shipping_fee_type,
+            delivery_discount_amount,
+            commission_rating_type,
+            commission_pre_pay_status,
+            payment_commission,
+            sale_commission,
+            knowledge_shopping_selling_interlock_commission,
+            channel_commission,
+            expected_settlement_amount,
+            mode_shipping
+        ) VALUES (
+            %(product_order_id)s,
+            %(order_id)s,
+            %(order_date)s,
+            %(payment_date)s,
+            %(payment_means)s,
+            %(pay_location_type)s,
+            %(order_discount_amount)s,
+            %(general_payment_amount)s,
+            %(naver_mileage_payment_amount)s,
+            %(charge_amount_payment_amount)s,
+            %(pay_later_payment_amount)s,
+            %(quantity)s,
+            %(initial_quantity)s,
+            %(remain_quantity)s,
+            %(total_product_amount)s,
+            %(initial_product_amount)s,
+            %(remain_product_amount)s,
+            %(total_payment_amount)s,
+            %(initial_payment_amount)s,
+            %(remain_payment_amount)s,
+            %(product_order_status)s,
+            %(product_id)s,
+            %(product_name)s,
+            %(unit_price)s,
+            %(product_class)s,
+            %(original_product_id)s,
+            %(merchant_channel_id)s,
+            %(item_no)s,
+            %(product_option)s,
+            %(option_code)s,
+            %(option_price)s,
+            %(mall_id)s,
+            %(inflow_path)s,
+            %(inflow_path_add)s,
+            %(product_discount_amount)s,
+            %(initial_product_discount_amount)s,
+            %(remain_product_discount_amount)s,
+            %(seller_burden_discount_amount)s,
+            %(product_imediate_discount_amount)s,
+            %(seller_burden_imediate_discount_amount)s,
+            %(delivery_fee_amount)s,
+            %(delivery_policy_type)s,
+            %(section_delivery_fee)s,
+            %(shipping_fee_type)s,
+            %(delivery_discount_amount)s,
+            %(commission_rating_type)s,
+            %(commission_pre_pay_status)s,
+            %(payment_commission)s,
+            %(sale_commission)s,
+            %(knowledge_shopping_selling_interlock_commission)s,
+            %(channel_commission)s,
+            %(expected_settlement_amount)s,
+            %(mode_shipping)s
+        )
+    """
+    try:
+        with conn.cursor() as cursor:
+            cursor.executemany(sql, order_list)
+
+        conn.commit()
+        print(f"success : insert {brand_info['smartstore_order_table']}")
+        # insert_log(
+        #     conn,
+        #     date,
+        #     "SUCCESS",
+        #     f"Order inserted for {len(order_list)}",
+        #     "imweb",
+        #     f"{brand_info['brand']}",
+        # )
+    except Exception as e:
+        print("fail")
+        log_error(e)
+        # insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")

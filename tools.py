@@ -53,6 +53,13 @@ def get_datetime_string(date_from, date_to, timezone_offset="+09:00"):
     return date_from, date_to
 
 
+def transfer_iso8601_timestamp(date):
+    date = datetime.fromisoformat(date.replace("Z", "+00:00"))
+    timestamp = date.strftime("%Y-%m-%d %H:%M:%S")
+
+    return timestamp
+
+
 def log_error(e):
     """현재 함수 이름과 오류 메시지를 동적으로 출력"""
     function_name = inspect.currentframe().f_back.f_code.co_name
