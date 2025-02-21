@@ -1,6 +1,7 @@
 import pymysql
 from dotenv import load_dotenv
 import os
+import time
 from imweb import get_order_list, get_order_detail_list
 from meta import get_meta
 from exchange_rate import get_krw_exchange_rate
@@ -15,9 +16,7 @@ from db import (
 
 load_dotenv()
 
-# DATE = "2025-01-29"
-DATE_FROM = "2023-05-01"
-DATE_TO = "2023-05-01"
+DATE = "2025-02-20"
 
 brand_info_list = [
     {
@@ -84,8 +83,8 @@ try:
         # insert_imweb_order_detail_table(DATE, brand_info, order_detail_list, conn)
         # meta_list = get_meta(DATE, brand_info, conn)
         # insert_meta_table(DATE, brand_info, meta_list, conn)
-        order_list = get_smartstore_order_list(DATE_FROM, DATE_TO, brand_info, conn)
-        insert_smartstore_order_table(DATE_FROM, brand_info, order_list, conn)
+        order_list = get_smartstore_order_list(DATE, brand_info, conn)
+        insert_smartstore_order_table(DATE, brand_info, order_list, conn)
 
     # exchange_rate_data = get_krw_exchange_rate(DATE, conn)
     # insert_exchange_rate_table(DATE, exchange_rate_data, conn)

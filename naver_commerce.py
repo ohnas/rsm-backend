@@ -2,7 +2,7 @@ import time
 import bcrypt
 import pybase64
 import requests
-from tools import log_error, get_datetime_string, transfer_iso8601_timestamp
+from tools import log_error, get_datetime_string, transfer_iso8601_timestamp, insert_log
 
 
 def get_access_token(brand_info):
@@ -32,10 +32,10 @@ def get_access_token(brand_info):
         log_error(e)
 
 
-def get_order_list(date_from, date_to, brand_info, conn):
+def get_order_list(date, brand_info, conn):
     access_token = get_access_token(brand_info)
     try:
-        date_from, date_to = get_datetime_string(date_from, date_to)
+        date_from, date_to = get_datetime_string(date)
         URL = (
             "https://api.commerce.naver.com/external/v1/pay-order/seller/product-orders"
         )
@@ -58,8 +58,12 @@ def get_order_list(date_from, date_to, brand_info, conn):
                     "order_date": transfer_iso8601_timestamp(
                         result["content"]["order"]["orderDate"]
                     ),
-                    "payment_date": transfer_iso8601_timestamp(
-                        result["content"]["order"]["paymentDate"]
+                    "payment_date": (
+                        None
+                        if result["content"]["order"].get("paymentDate") == None
+                        else transfer_iso8601_timestamp(
+                            result["content"]["order"]["paymentDate"]
+                        )
                     ),
                     "payment_means": result["content"]["order"]["paymentMeans"],
                     "pay_location_type": result["content"]["order"]["payLocationType"],
@@ -117,16 +121,16 @@ def get_order_list(date_from, date_to, brand_info, conn):
                         "merchantChannelId"
                     ],
                     "item_no": result["content"]["productOrder"]["itemNo"],
-                    "product_option": result["content"]["productOrder"][
+                    "product_option": result["content"]["productOrder"].get(
                         "productOption"
-                    ],
+                    ),
                     "option_code": result["content"]["productOrder"]["optionCode"],
                     "option_price": result["content"]["productOrder"]["optionPrice"],
                     "mall_id": result["content"]["productOrder"]["mallId"],
                     "inflow_path": result["content"]["productOrder"]["inflowPath"],
-                    "inflow_path_add": result["content"]["productOrder"][
+                    "inflow_path_add": result["content"]["productOrder"].get(
                         "inflowPathAdd"
-                    ],
+                    ),
                     "product_discount_amount": result["content"]["productOrder"][
                         "productDiscountAmount"
                     ],
@@ -187,7 +191,15 @@ def get_order_list(date_from, date_to, brand_info, conn):
         print("order list cnt : ", len(order_list))
         print("success : order list from : ", date_from)
         print("success : order list to : ", date_to)
-
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            f"Order fetched for {len(order_list)}",
+            "smartstore",
+            f"{brand_info['brand']}",
+        )
         return order_list
     except Exception as e:
         log_error(e)
+        insert_log(conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}")

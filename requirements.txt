@@ -1,8 +1,10 @@
+bcrypt==4.2.1
 certifi==2024.8.30
 charset-normalizer==3.4.0
 et_xmlfile==2.0.0
 idna==3.10
 openpyxl==3.1.5
+pybase64==1.4.0
 PyMySQL==1.1.1
 python-dotenv==1.0.1
 pytz==2024.2

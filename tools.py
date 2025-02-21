@@ -46,9 +46,9 @@ def temp_get_timestamps(date_from, date_to):
     return timestamp_from, timestamp_to
 
 
-def get_datetime_string(date_from, date_to, timezone_offset="+09:00"):
-    date_from = f"{date_from}T00:00:00.000{timezone_offset}"
-    date_to = f"{date_to}T23:59:59.999{timezone_offset}"
+def get_datetime_string(date, timezone_offset="+09:00"):
+    date_from = f"{date}T00:00:00.000{timezone_offset}"
+    date_to = f"{date}T23:59:59.999{timezone_offset}"
 
     return date_from, date_to
 
