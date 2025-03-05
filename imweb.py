@@ -326,9 +326,9 @@ def update_order_detail_list(order_no_list, brand_info, conn):
         order_detail_change_list = []
         if order_no_list:
             access_token = get_access_token(brand_info)
-            for order_no in order_no_list:
+            for order in order_no_list:
                 time.sleep(0.7)
-                url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
+                url = f"https://api.imweb.me/v2/shop/orders/{order['order_no']}/prod-orders"
                 headers = {
                     "Content-Type": "application/json",
                     "access-token": access_token,
