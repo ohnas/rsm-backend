@@ -30,7 +30,6 @@ try:
     )
     order_no_list = select_imweb_order_detail_table(brand_info, conn)
     order_detail_change_list = update_order_detail_list(order_no_list, brand_info, conn)
-    print(order_detail_change_list)
     update_imweb_order_detail_table(brand_info, order_detail_change_list, conn)
 
 finally:

@@ -493,14 +493,16 @@ def select_imweb_order_detail_table(brand_info, conn):
         FROM {brand_info['imweb_order_detail_table']}
         WHERE status IN ('DELIVERING','STANDBY','PAY_COMPLETE','PAY_WAIT') 
         ORDER BY pay_time ASC 
-        LIMIT 5
+        LIMIT 100
         """
 
     try:
         with conn.cursor() as cursor:
             cursor.execute(sql)
             result = cursor.fetchall()  # 여러 개의 행 가져오기
-
+        print(
+            f"success : select {brand_info['imweb_order_detail_table']} : {len(result)}"
+        )
         return result
     except Exception as e:
         print("fail")
@@ -527,9 +529,9 @@ def update_imweb_order_detail_table(brand_info, order_detail_change_list, conn):
             claim_type = %(claim_type)s,
             pay_time = FROM_UNIXTIME(%(pay_time)s),
             delivery_time = FROM_UNIXTIME(%(delivery_time)s),
-            complete_time = FROM_UNIXTIME(%(complete_time)s),
+            complete_time = FROM_UNIXTIME(%(complete_time)s)
         WHERE 
-            order_detail_no = %(order_detail_no)s,
+            order_detail_no = %(order_detail_no)s
     """
 
     try:
@@ -537,7 +539,7 @@ def update_imweb_order_detail_table(brand_info, order_detail_change_list, conn):
             cursor.executemany(sql, order_detail_change_list)
 
         conn.commit()
-        print(f"success : insert {brand_info['imweb_order_detail_table']}")
+        print(f"success : update {brand_info['imweb_order_detail_table']}")
     except Exception as e:
         print("fail")
         log_error(e)
