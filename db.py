@@ -505,3 +505,39 @@ def select_imweb_order_detail_table(brand_info, conn):
     except Exception as e:
         print("fail")
         log_error(e)
+
+
+def update_imweb_order_detail_table(brand_info, order_detail_change_list, conn):
+    allowed_tables = [
+        "imweb_order_detail_undirty",
+        "imweb_order_detail_ttc",
+        "imweb_order_detail_anddle",
+    ]
+
+    if brand_info["imweb_order_detail_table"] not in allowed_tables:
+        raise ValueError(
+            f"Invalid table name: {brand_info['imweb_order_detail_table']}"
+        )
+
+    sql = f"""
+        UPDATE {brand_info['imweb_order_detail_table']} 
+        SET 
+            status = %(status)s,
+            claim_status = %(claim_status)s,
+            claim_type = %(claim_type)s,
+            pay_time = FROM_UNIXTIME(%(pay_time)s),
+            delivery_time = FROM_UNIXTIME(%(delivery_time)s),
+            complete_time = FROM_UNIXTIME(%(complete_time)s),
+        WHERE 
+            order_detail_no = %(order_detail_no)s,
+    """
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.executemany(sql, order_detail_change_list)
+
+        conn.commit()
+        print(f"success : insert {brand_info['imweb_order_detail_table']}")
+    except Exception as e:
+        print("fail")
+        log_error(e)

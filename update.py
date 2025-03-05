@@ -1,7 +1,7 @@
 import pymysql
 from dotenv import load_dotenv
 import os
-from db import select_imweb_order_detail_table
+from db import select_imweb_order_detail_table, update_imweb_order_detail_table
 from imweb import update_order_detail_list
 
 load_dotenv()
@@ -31,6 +31,7 @@ try:
     order_no_list = select_imweb_order_detail_table(brand_info, conn)
     order_detail_change_list = update_order_detail_list(order_no_list, brand_info, conn)
     print(order_detail_change_list)
+    update_imweb_order_detail_table(brand_info, order_detail_change_list, conn)
 
 finally:
     conn.close()
