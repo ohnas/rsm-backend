@@ -474,3 +474,34 @@ def insert_smartstore_order_table(date, brand_info, order_list, conn):
         print("fail")
         log_error(e)
         insert_log(conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}")
+
+
+def select_imweb_order_detail_table(brand_info, conn):
+    allowed_tables = [
+        "imweb_order_detail_undirty",
+        "imweb_order_detail_ttc",
+        "imweb_order_detail_anddle",
+    ]
+
+    if brand_info["imweb_order_detail_table"] not in allowed_tables:
+        raise ValueError(
+            f"Invalid table name: {brand_info['imweb_order_detail_table']}"
+        )
+
+    sql = f"""
+        SELECT order_no 
+        FROM {brand_info['imweb_order_detail_table']}
+        WHERE status IN ('DELIVERING','STANDBY','PAY_COMPLETE','PAY_WAIT') 
+        ORDER BY pay_time ASC 
+        LIMIT 10
+        """
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(sql)
+            result = cursor.fetchall()  # 여러 개의 행 가져오기
+
+        return result
+    except Exception as e:
+        print("fail")
+        log_error(e)
