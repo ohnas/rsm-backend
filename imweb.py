@@ -2,19 +2,6 @@ import requests
 import time
 from tools import get_timestamps, log_error, insert_log
 
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-brand_info = {
-    "brand": "ttc",
-    "imweb_api_key": os.getenv("IMWEB_API_KEY_TTC"),
-    "imweb_api_secret": os.getenv("IMWEB_API_SECRET_TTC"),
-    "order_version": "v2",
-    "mode_shipping": 3322,
-}
-
 
 def get_access_token(brand_info):
     try:
@@ -334,38 +321,60 @@ def get_order_detail_list(date, order_no_list, access_token, brand_info, conn):
         insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
 
 
-def update_order_detail_list():
+def update_order_detail_list(order_no_list, brand_info, conn):
     try:
-        access_token = get_access_token(brand_info)
-        order_no = "202503047135711"
-        url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
-        headers = {
-            "Content-Type": "application/json",
-            "access-token": access_token,
-            "version": "latest",
-        }
-        params = {
-            "order_version": brand_info["order_version"],
-        }
-        # 코드가 200이 될 때까지 반복적으로 요청
-        max_retries = 5
-        retries = 0
-        response = None
-        while retries < max_retries:
-            response = requests.get(url, headers=headers, params=params)
-            json_data = response.json()
-            if json_data["code"] == 200:
-                break
-            else:
-                retries += 1
+        order_detail_change_list = []
+        if order_no_list:
+            access_token = get_access_token(brand_info)
+            for order_no in order_no_list:
                 time.sleep(0.7)
+                url = f"https://api.imweb.me/v2/shop/orders/{order_no}/prod-orders"
+                headers = {
+                    "Content-Type": "application/json",
+                    "access-token": access_token,
+                    "version": "latest",
+                }
+                params = {
+                    "order_version": brand_info["order_version"],
+                }
+                # 코드가 200이 될 때까지 반복적으로 요청
+                max_retries = 5
+                retries = 0
+                response = None
+                while retries < max_retries:
+                    response = requests.get(url, headers=headers, params=params)
+                    json_data = response.json()
+                    if json_data["code"] == 200:
+                        break
+                    else:
+                        retries += 1
+                        time.sleep(0.7)
 
-        results = json_data["data"]
-        print(results)
+                results = json_data["data"]
+                for result in results:
+                    dic = {
+                        "order_detail_no": result["order_no"],
+                        "status": result["status"],
+                        "claim_status": result.get("claim_status"),
+                        "claim_type": result.get("claim_type"),
+                        "pay_time": (
+                            None
+                            if result.get("pay_time") in [0, None]
+                            else result["pay_time"]
+                        ),
+                        "delivery_time": (
+                            None
+                            if result.get("delivery_time") in [0, None]
+                            else result["delivery_time"]
+                        ),
+                        "complete_time": (
+                            None
+                            if result.get("complete_time") in [0, None]
+                            else result["complete_time"]
+                        ),
+                    }
+                    order_detail_change_list.append(dic)
 
-        # return order_detail_list
+        return order_detail_change_list
     except Exception as e:
         log_error(e)
-
-
-update_order_detail_list()
