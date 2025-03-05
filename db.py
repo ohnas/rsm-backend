@@ -493,7 +493,7 @@ def select_imweb_order_detail_table(brand_info, conn):
         FROM {brand_info['imweb_order_detail_table']}
         WHERE status IN ('DELIVERING','STANDBY','PAY_COMPLETE','PAY_WAIT') 
         ORDER BY pay_time ASC 
-        LIMIT 10
+        LIMIT 5
         """
 
     try:
