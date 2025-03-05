@@ -520,26 +520,26 @@ def update_imweb_order_detail_table(brand_info, order_detail_change_list, conn):
         raise ValueError(
             f"Invalid table name: {brand_info['imweb_order_detail_table']}"
         )
+    if order_detail_change_list:
+        sql = f"""
+            UPDATE {brand_info['imweb_order_detail_table']} 
+            SET 
+                status = %(status)s,
+                claim_status = %(claim_status)s,
+                claim_type = %(claim_type)s,
+                pay_time = FROM_UNIXTIME(%(pay_time)s),
+                delivery_time = FROM_UNIXTIME(%(delivery_time)s),
+                complete_time = FROM_UNIXTIME(%(complete_time)s)
+            WHERE 
+                order_detail_no = %(order_detail_no)s
+        """
 
-    sql = f"""
-        UPDATE {brand_info['imweb_order_detail_table']} 
-        SET 
-            status = %(status)s,
-            claim_status = %(claim_status)s,
-            claim_type = %(claim_type)s,
-            pay_time = FROM_UNIXTIME(%(pay_time)s),
-            delivery_time = FROM_UNIXTIME(%(delivery_time)s),
-            complete_time = FROM_UNIXTIME(%(complete_time)s)
-        WHERE 
-            order_detail_no = %(order_detail_no)s
-    """
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, order_detail_change_list)
 
-    try:
-        with conn.cursor() as cursor:
-            cursor.executemany(sql, order_detail_change_list)
-
-        conn.commit()
-        print(f"success : update {brand_info['imweb_order_detail_table']}")
-    except Exception as e:
-        print("fail")
-        log_error(e)
+            conn.commit()
+            print(f"success : update {brand_info['imweb_order_detail_table']}")
+        except Exception as e:
+            print("fail")
+            log_error(e)
