@@ -476,7 +476,7 @@ def insert_smartstore_order_table(date, brand_info, order_list, conn):
         insert_log(conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}")
 
 
-def select_imweb_order_detail_table(brand_info, conn):
+def select_imweb_order_detail_table(date, brand_info, conn):
     allowed_tables = [
         "imweb_order_detail_undirty",
         "imweb_order_detail_ttc",
@@ -503,13 +503,22 @@ def select_imweb_order_detail_table(brand_info, conn):
         print(
             f"success : select {brand_info['imweb_order_detail_table']} : {len(result)}"
         )
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            f"selected for {len(result)}",
+            "imweb",
+            f"{brand_info['brand']}",
+        )
         return result
     except Exception as e:
         print("fail")
         log_error(e)
+        insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
 
 
-def update_imweb_order_detail_table(brand_info, order_detail_change_list, conn):
+def update_imweb_order_detail_table(date, brand_info, order_detail_change_list, conn):
     allowed_tables = [
         "imweb_order_detail_undirty",
         "imweb_order_detail_ttc",
@@ -540,6 +549,15 @@ def update_imweb_order_detail_table(brand_info, order_detail_change_list, conn):
 
             conn.commit()
             print(f"success : update {brand_info['imweb_order_detail_table']}")
+            insert_log(
+                conn,
+                date,
+                "SUCCESS",
+                f"updated for {len(order_detail_change_list)}",
+                "imweb",
+                f"{brand_info['brand']}",
+            )
         except Exception as e:
             print("fail")
             log_error(e)
+            insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
