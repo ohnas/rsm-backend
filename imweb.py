@@ -321,7 +321,7 @@ def get_order_detail_list(date, order_no_list, access_token, brand_info, conn):
         insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
 
 
-def update_order_detail_list(order_no_list, brand_info, conn):
+def update_order_detail_list(date, order_no_list, brand_info, conn):
     try:
         order_detail_change_list = []
         if order_no_list:
@@ -374,7 +374,15 @@ def update_order_detail_list(order_no_list, brand_info, conn):
                         ),
                     }
                     order_detail_change_list.append(dic)
-
+        insert_log(
+            conn,
+            date,
+            "SUCCESS",
+            f"Order details fetched for {len(order_detail_change_list)}",
+            "imweb",
+            f"{brand_info['brand']}",
+        )
         return order_detail_change_list
     except Exception as e:
         log_error(e)
+        insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
