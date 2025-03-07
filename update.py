@@ -5,6 +5,9 @@ from db import select_imweb_order_detail_table, update_imweb_order_detail_table
 from imweb import update_order_detail_list
 
 load_dotenv()
+
+DATE = "2025-03-06"
+
 brand_info_list = [
     {
         "brand": "ttc",
@@ -44,11 +47,13 @@ try:
         cursorclass=pymysql.cursors.DictCursor,
     )
     for brand_info in brand_info_list:
-        order_no_list = select_imweb_order_detail_table(brand_info, conn)
+        order_no_list = select_imweb_order_detail_table(DATE, brand_info, conn)
         order_detail_change_list = update_order_detail_list(
-            order_no_list, brand_info, conn
+            DATE, order_no_list, brand_info, conn
         )
-        update_imweb_order_detail_table(brand_info, order_detail_change_list, conn)
+        update_imweb_order_detail_table(
+            DATE, brand_info, order_detail_change_list, conn
+        )
 
 finally:
     conn.close()
