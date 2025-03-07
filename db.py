@@ -586,7 +586,18 @@ def update_smartstore_order_table(date, brand_info, change_order_list, conn):
 
             conn.commit()
             print(f"success : update {brand_info['smartstore_order_table']}")
+            insert_log(
+                conn,
+                date,
+                "SUCCESS",
+                f"updated for {len(change_order_list)}",
+                "smartstore",
+                f"{brand_info['brand']}",
+            )
 
         except Exception as e:
             print("fail")
             log_error(e)
+            insert_log(
+                conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}"
+            )
