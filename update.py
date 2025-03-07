@@ -11,23 +11,23 @@ from naver_commerce import update_order_list
 
 load_dotenv()
 
-DATE = "2025-03-05"
+DATE = "2025-03-06"
 
 brand_info_list = [
-    # {
-    #     "brand": "ttc",
-    #     "imweb_api_key": os.getenv("IMWEB_API_KEY_TTC"),
-    #     "imweb_api_secret": os.getenv("IMWEB_API_SECRET_TTC"),
-    #     "order_version": "v2",
-    #     "imweb_order_detail_table": "imweb_order_detail_ttc",
-    # },
-    # {
-    #     "brand": "anddle",
-    #     "imweb_api_key": os.getenv("IMWEB_API_KEY_ANDDLE"),
-    #     "imweb_api_secret": os.getenv("IMWEB_API_SECRET_ANDDLE"),
-    #     "order_version": "v2",
-    #     "imweb_order_detail_table": "imweb_order_detail_anddle",
-    # },
+    {
+        "brand": "ttc",
+        "imweb_api_key": os.getenv("IMWEB_API_KEY_TTC"),
+        "imweb_api_secret": os.getenv("IMWEB_API_SECRET_TTC"),
+        "order_version": "v2",
+        "imweb_order_detail_table": "imweb_order_detail_ttc",
+    },
+    {
+        "brand": "anddle",
+        "imweb_api_key": os.getenv("IMWEB_API_KEY_ANDDLE"),
+        "imweb_api_secret": os.getenv("IMWEB_API_SECRET_ANDDLE"),
+        "order_version": "v2",
+        "imweb_order_detail_table": "imweb_order_detail_anddle",
+    },
     {
         "brand": "undirty",
         "imweb_api_key": os.getenv("IMWEB_API_KEY_UNDIRTY"),
@@ -55,13 +55,13 @@ try:
         cursorclass=pymysql.cursors.DictCursor,
     )
     for brand_info in brand_info_list:
-        # order_no_list = select_imweb_order_detail_table(DATE, brand_info, conn)
-        # order_detail_change_list = update_order_detail_list(
-        #     DATE, order_no_list, brand_info, conn
-        # )
-        # update_imweb_order_detail_table(
-        #     DATE, brand_info, order_detail_change_list, conn
-        # )
+        order_no_list = select_imweb_order_detail_table(DATE, brand_info, conn)
+        order_detail_change_list = update_order_detail_list(
+            DATE, order_no_list, brand_info, conn
+        )
+        update_imweb_order_detail_table(
+            DATE, brand_info, order_detail_change_list, conn
+        )
         change_order_list = update_order_list(DATE, brand_info, conn)
         update_smartstore_order_table(DATE, brand_info, change_order_list, conn)
 finally:
