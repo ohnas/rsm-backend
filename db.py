@@ -561,3 +561,32 @@ def update_imweb_order_detail_table(date, brand_info, order_detail_change_list, 
             print("fail")
             log_error(e)
             insert_log(conn, date, "FAIL", str(e), "imweb", f"{brand_info['brand']}")
+
+
+def update_smartstore_order_table(date, brand_info, change_order_list, conn):
+    allowed_tables = ["smartstore_order_undirty"]
+
+    if brand_info["smartstore_order_table"] not in allowed_tables:
+        raise ValueError(f"Invalid table name: {brand_info['smartstore_order_table']}")
+
+    if change_order_list:
+        sql = f"""
+            UPDATE {brand_info['smartstore_order_table']} 
+            SET 
+                product_order_status = %(product_order_status)s
+            WHERE 
+                product_order_id = %(product_order_id)s
+                AND
+                order_id = %(order_id)s
+        """
+
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, change_order_list)
+
+            conn.commit()
+            print(f"success : update {brand_info['smartstore_order_table']}")
+
+        except Exception as e:
+            print("fail")
+            log_error(e)
