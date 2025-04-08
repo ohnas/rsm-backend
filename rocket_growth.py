@@ -21,13 +21,13 @@ conn = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor,
 )
 
-FILE_PATH = "/Users/ohnaseong/Downloads/2025_02_01.xlsx"
+FILE_PATH = "/Users/ohnaseong/Downloads/2025_02_04.xlsx"
 WORK_BOOK = load_workbook(FILE_PATH)
 
 
 def insert_rocket_growth_order_table(conn):
 
-    sheet = WORK_BOOK["rocket_growth_order_undirty"]
+    sheet = WORK_BOOK["rocket_growth_order"]
     records = list(sheet.iter_rows(values_only=True))[1:]
     data = []
 
@@ -127,7 +127,7 @@ def insert_rocket_growth_order_table(conn):
 
 def insert_rocket_growth_warehousing_table(conn):
 
-    sheet = WORK_BOOK["rocket_growth_warehousing_undirty"]
+    sheet = WORK_BOOK["rocket_growth_warehousing"]
     records = list(sheet.iter_rows(values_only=True))[1:]
     data = []
 
@@ -212,7 +212,7 @@ def insert_rocket_growth_warehousing_table(conn):
 
 def insert_rocket_growth_shipping_table(conn):
 
-    sheet = WORK_BOOK["rocket_growth_shipping_undirty"]
+    sheet = WORK_BOOK["rocket_growth_shipping"]
     records = list(sheet.iter_rows(values_only=True))[1:]
     data = []
 
@@ -297,6 +297,511 @@ def insert_rocket_growth_shipping_table(conn):
         except Exception as e:
             print(f"Error: {str(e)}")
 
+
+def insert_rocket_growth_storage_table(conn):
+
+    sheet = WORK_BOOK["rocket_growth_storage"]
+    records = list(sheet.iter_rows(values_only=True))[1:]
+    data = []
+
+    if records:
+        for record in records:
+            dic = {
+                "date": record[0],
+                "display_date": record[1],
+                "storage_period": record[2],
+                "product_id": record[3],
+                "option_id": record[4],
+                "sku_id": record[5],
+                "product_name": record[6],
+                "option_name": record[7],
+                "category_id": record[8],
+                "category_name": record[9],
+                "stock_quantity": record[10],
+                "cbm": record[11],
+                "fee": record[12],
+                "discount": record[13],
+                "net_amount": record[14],
+            }
+            data.append(dic)
+
+        sql = """
+            INSERT INTO rocket_growth_storage_undirty (
+                date,
+                display_date,
+                storage_period,
+                product_id,
+                option_id,
+                sku_id,
+                product_name,
+                option_name,
+                category_id,
+                category_name,
+                stock_quantity,
+                cbm,
+                fee,
+                discount,
+                net_amount
+            ) VALUES (
+                %(date)s,
+                %(display_date)s,
+                %(storage_period)s,
+                %(product_id)s,
+                %(option_id)s,
+                %(sku_id)s,
+                %(product_name)s,
+                %(option_name)s,
+                %(category_id)s,
+                %(category_name)s,
+                %(stock_quantity)s,
+                %(cbm)s,
+                %(fee)s,
+                %(discount)s,
+                %(net_amount)s
+            )
+        """
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, data)
+            conn.commit()
+            print(
+                f"Success: Inserted {len(data)} rows into rocket_growth_storage_undirty"
+            )
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
+
+def insert_rocket_growth_return_table(conn):
+
+    sheet = WORK_BOOK["rocket_growth_return"]
+    records = list(sheet.iter_rows(values_only=True))[1:]
+    data = []
+
+    if records:
+        for record in records:
+            dic = {
+                "date": record[0],
+                "transaction_type": record[1],
+                "order_no": record[2],
+                "order_date": record[3],
+                "product_id": record[4],
+                "option_id": record[5],
+                "sku_id": record[6],
+                "product_name": record[7],
+                "option_name": record[8],
+                "category_id": record[9],
+                "category_name": record[10],
+                "return_quantity": record[11],
+                "free_promotion_type": record[12],
+                "quantity_to_be_billed": record[13],
+                "price": record[14],
+                "instant_discount_coupon": record[15],
+                "download_coupon": record[16],
+                "sales_amount": record[17],
+                "total_size": record[18],
+                "fee": record[19],
+                "discount": record[20],
+                "discounted_fee": record[21],
+                "free_promotion_fee": record[22],
+                "net_amount": record[23],
+            }
+            data.append(dic)
+
+        sql = """
+            INSERT INTO rocket_growth_return_undirty (
+                date,
+                transaction_type,
+                order_no,
+                order_date,
+                product_id,
+                option_id,
+                sku_id,
+                product_name,
+                option_name,
+                category_id,
+                category_name,
+                return_quantity,
+                free_promotion_type,
+                quantity_to_be_billed,
+                price,
+                instant_discount_coupon,
+                download_coupon,
+                sales_amount,
+                total_size,
+                fee,
+                discount,
+                discounted_fee,
+                free_promotion_fee,
+                net_amount
+            ) VALUES (
+                %(date)s,
+                %(transaction_type)s,
+                %(order_no)s,
+                %(order_date)s,
+                %(product_id)s,
+                %(option_id)s,
+                %(sku_id)s,
+                %(product_name)s,
+                %(option_name)s,
+                %(category_id)s,
+                %(category_name)s,
+                %(return_quantity)s,
+                %(free_promotion_type)s,
+                %(quantity_to_be_billed)s,
+                %(price)s,
+                %(instant_discount_coupon)s,
+                %(download_coupon)s,
+                %(sales_amount)s,
+                %(total_size)s,
+                %(fee)s,
+                %(discount)s,
+                %(discounted_fee)s,
+                %(free_promotion_fee)s,
+                %(net_amount)s
+            )
+        """
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, data)
+            conn.commit()
+            print(
+                f"Success: Inserted {len(data)} rows into rocket_growth_return_undirty"
+            )
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
+
+def insert_rocket_growth_restocking_table(conn):
+
+    sheet = WORK_BOOK["rocket_growth_restocking"]
+    records = list(sheet.iter_rows(values_only=True))[1:]
+    data = []
+
+    if records:
+        for record in records:
+            dic = {
+                "date": record[0],
+                "transaction_type": record[1],
+                "order_no": record[2],
+                "order_date": record[3],
+                "check_no": record[4],
+                "product_id": record[5],
+                "option_id": record[6],
+                "sku_id": record[7],
+                "product_name": record[8],
+                "option_name": record[9],
+                "price": record[10],
+                "instant_discount_coupon": record[11],
+                "download_coupon": record[12],
+                "sales_amount": record[13],
+                "restocking_quantity": record[14],
+                "free_promotion_type": record[15],
+                "quantity_to_be_billed": record[16],
+                "fee": record[17],
+                "discount": record[18],
+                "discounted_fee": record[19],
+                "free_promotion_fee": record[20],
+                "net_amount": record[21],
+            }
+            data.append(dic)
+
+        sql = """
+            INSERT INTO rocket_growth_restocking_undirty (
+                date,
+                transaction_type,
+                order_no,
+                order_date,
+                check_no,
+                product_id,
+                option_id,
+                sku_id,
+                product_name,
+                option_name,
+                price,
+                instant_discount_coupon,
+                download_coupon,
+                sales_amount,
+                restocking_quantity,
+                free_promotion_type,
+                quantity_to_be_billed,
+                fee,
+                discount,
+                discounted_fee,
+                free_promotion_fee,
+                net_amount
+            ) VALUES (
+                %(date)s,
+                %(transaction_type)s,
+                %(order_no)s,
+                %(order_date)s,
+                %(check_no)s,
+                %(product_id)s,
+                %(option_id)s,
+                %(sku_id)s,
+                %(product_name)s,
+                %(option_name)s,
+                %(price)s,
+                %(instant_discount_coupon)s,
+                %(download_coupon)s,
+                %(sales_amount)s,
+                %(restocking_quantity)s,
+                %(free_promotion_type)s,
+                %(quantity_to_be_billed)s,
+                %(fee)s,
+                %(discount)s,
+                %(discounted_fee)s,
+                %(free_promotion_fee)s,
+                %(net_amount)s
+            )
+        """
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, data)
+            conn.commit()
+            print(
+                f"Success: Inserted {len(data)} rows into rocket_growth_restocking_undirty"
+            )
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
+
+def insert_rocket_growth_export_table(conn):
+
+    sheet = WORK_BOOK["rocket_growth_export"]
+    records = list(sheet.iter_rows(values_only=True))[1:]
+    data = []
+
+    if records:
+        for record in records:
+            dic = {
+                "date": record[0],
+                "transaction_type": record[1],
+                "export_type": record[2],
+                "export_no": record[3],
+                "export_date": record[4],
+                "product_id": record[5],
+                "option_id": record[6],
+                "sku_id": record[7],
+                "product_name": record[8],
+                "option_name": record[9],
+                "export_quantity": record[10],
+                "free_promotion_type": record[11],
+                "quantity_to_be_billed": record[12],
+                "fee": record[13],
+                "discount": record[14],
+                "discounted_fee": record[15],
+                "free_promotion_fee": record[16],
+                "net_amount": record[17],
+            }
+            data.append(dic)
+
+        sql = """
+            INSERT INTO rocket_growth_export_undirty (
+                date,
+                transaction_type,
+                export_type,
+                export_no,
+                export_date,
+                product_id,
+                option_id,
+                sku_id,
+                product_name,
+                option_name,
+                export_quantity,
+                free_promotion_type,
+                quantity_to_be_billed,
+                fee,
+                discount,
+                discounted_fee,
+                free_promotion_fee,
+                net_amount
+            ) VALUES (
+                %(date)s,
+                %(transaction_type)s,
+                %(export_type)s,
+                %(export_no)s,
+                %(export_date)s,
+                %(product_id)s,
+                %(option_id)s,
+                %(sku_id)s,
+                %(product_name)s,
+                %(option_name)s,
+                %(export_quantity)s,
+                %(free_promotion_type)s,
+                %(quantity_to_be_billed)s,
+                %(fee)s,
+                %(discount)s,
+                %(discounted_fee)s,
+                %(free_promotion_fee)s,
+                %(net_amount)s
+            )
+        """
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, data)
+            conn.commit()
+            print(
+                f"Success: Inserted {len(data)} rows into rocket_growth_export_undirty"
+            )
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
+
+def insert_rocket_growth_compensation_table(conn):
+
+    sheet = WORK_BOOK["rocket_growth_compensation"]
+    records = list(sheet.iter_rows(values_only=True))[1:]
+    data = []
+
+    if records:
+        for record in records:
+            dic = {
+                "date": record[0],
+                "end_date": record[1],
+                "order_no": record[2],
+                "type": record[3],
+                "kind": record[4],
+                "option_id": record[5],
+                "product_name": record[6],
+                "option_name": record[7],
+                "check_class": record[8],
+                "check_no": record[9],
+                "responsibility": record[10],
+                "compensation_standard_amount": record[11],
+                "compensation_rate": record[12],
+                "compensation_amount": record[13],
+            }
+            data.append(dic)
+
+        sql = """
+            INSERT INTO rocket_growth_compensation_undirty (
+                date,
+                end_date,
+                order_no,
+                type,
+                kind,
+                option_id,
+                product_name,
+                option_name,
+                check_class,
+                check_no,
+                responsibility,
+                compensation_standard_amount,
+                compensation_rate,
+                compensation_amount
+            ) VALUES (
+                %(date)s,
+                %(end_date)s,
+                %(order_no)s,
+                %(type)s,
+                %(kind)s,
+                %(option_id)s,
+                %(product_name)s,
+                %(option_name)s,
+                %(check_class)s,
+                %(check_no)s,
+                %(responsibility)s,
+                %(compensation_standard_amount)s,
+                %(compensation_rate)s,
+                %(compensation_amount)s
+            )
+        """
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, data)
+            conn.commit()
+            print(
+                f"Success: Inserted {len(data)} rows into rocket_growth_compensation_undirty"
+            )
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
+
+def insert_rocket_growth_barcode_fee_table(conn):
+
+    sheet = WORK_BOOK["rocket_growth_barcode_fee"]
+    records = list(sheet.iter_rows(values_only=True))[1:]
+    data = []
+
+    if records:
+        for record in records:
+            dic = {
+                "date": record[0],
+                "transaction_type": record[1],
+                "service_type": record[2],
+                "inbound_no": record[3],
+                "request_no": record[4],
+                "product_id": record[5],
+                "option_id": record[6],
+                "sku_id": record[7],
+                "product_name": record[8],
+                "option_name": record[9],
+                "size": record[10],
+                "center": record[11],
+                "quantity": record[12],
+                "fee": record[13],
+                "discount": record[14],
+                "net_amount": record[15],
+            }
+            data.append(dic)
+
+        sql = """
+            INSERT INTO rocket_growth_barcode_fee_undirty (
+                date,
+                transaction_type,
+                service_type,
+                inbound_no,
+                request_no,
+                product_id,
+                option_id,
+                sku_id,
+                product_name,
+                option_name,
+                size,
+                center,
+                quantity,
+                fee,
+                discount,
+                net_amount
+            ) VALUES (
+                %(date)s,
+                %(transaction_type)s,
+                %(service_type)s,
+                %(inbound_no)s,
+                %(request_no)s,
+                %(product_id)s,
+                %(option_id)s,
+                %(sku_id)s,
+                %(product_name)s,
+                %(option_name)s,
+                %(size)s,
+                %(center)s,
+                %(quantity)s,
+                %(fee)s,
+                %(discount)s,
+                %(net_amount)s
+            )
+        """
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, data)
+            conn.commit()
+            print(
+                f"Success: Inserted {len(data)} rows into rocket_growth_barcode_fee_undirty"
+            )
+        except Exception as e:
+            print(f"Error: {str(e)}")
+
+
+insert_rocket_growth_order_table(conn)
+insert_rocket_growth_warehousing_table(conn)
+insert_rocket_growth_shipping_table(conn)
+insert_rocket_growth_storage_table(conn)
+insert_rocket_growth_return_table(conn)
+insert_rocket_growth_restocking_table(conn)
+insert_rocket_growth_export_table(conn)
+insert_rocket_growth_compensation_table(conn)
+insert_rocket_growth_barcode_fee_table(conn)
 
 # 모든 데이터베이스 연결 종료
 conn.close()
