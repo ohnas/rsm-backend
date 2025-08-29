@@ -40,7 +40,7 @@ def get_action_value_from_values(action_values, action_type):
 
 def get_meta(date, brand_info, conn):
     try:
-        ver = "v21.0"
+        ver = "v23.0"
         insights = "account_currency,account_id,account_name,campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,objective,spend,cost_per_inline_link_click,impressions,reach,frequency,cpm,cpp,created_time,updated_time,actions,action_values"
         url = (
             f"https://graph.facebook.com/{ver}/act_{brand_info['meta_act_id']}/insights"
