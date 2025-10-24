@@ -15,7 +15,7 @@ from db import (
 
 load_dotenv()
 
-DATE = "2025-02-20"
+DATE = "2025-10-23"
 
 brand_info_list = [
     {

@@ -26,7 +26,7 @@ def get_access_token(brand_info):
         response = requests.post(URL, headers=headers, data=data)
         json_data = response.json()
         access_token = json_data["access_token"]
-
+        print(access_token)
         return access_token
     except Exception as e:
         log_error(e)
@@ -191,55 +191,55 @@ def get_order_list(date, brand_info, conn):
         print("order list cnt : ", len(order_list))
         print("success : order list from : ", date_from)
         print("success : order list to : ", date_to)
-        insert_log(
-            conn,
-            date,
-            "SUCCESS",
-            f"Order fetched for {len(order_list)}",
-            "smartstore",
-            f"{brand_info['brand']}",
-        )
+        # insert_log(
+        #     conn,
+        #     date,
+        #     "SUCCESS",
+        #     f"Order fetched for {len(order_list)}",
+        #     "smartstore",
+        #     f"{brand_info['brand']}",
+        # )
         return order_list
     except Exception as e:
         log_error(e)
-        insert_log(conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}")
+        # insert_log(conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}")
 
 
-def update_order_list(date, brand_info, conn):
-    access_token = get_access_token(brand_info)
-    try:
-        date_from, date_to = get_datetime_string(date)
-        URL = "https://api.commerce.naver.com/external/v1/pay-order/seller/product-orders/last-changed-statuses"
-        headers = {"Authorization": f"Bearer {access_token}"}
-        params = {
-            "lastChangedFrom": date_from,
-            "lastChangedTo": date_to,
-        }
-        response = requests.get(URL, headers=headers, params=params)
-        json_data = response.json()
-        results = json_data["data"]["lastChangeStatuses"]
-        change_order_list = []
+# def update_order_list(date, brand_info, conn):
+#     access_token = get_access_token(brand_info)
+#     try:
+#         date_from, date_to = get_datetime_string(date)
+#         URL = "https://api.commerce.naver.com/external/v1/pay-order/seller/product-orders/last-changed-statuses"
+#         headers = {"Authorization": f"Bearer {access_token}"}
+#         params = {
+#             "lastChangedFrom": date_from,
+#             "lastChangedTo": date_to,
+#         }
+#         response = requests.get(URL, headers=headers, params=params)
+#         json_data = response.json()
+#         results = json_data["data"]["lastChangeStatuses"]
+#         change_order_list = []
 
-        if results:
-            for result in results:
-                dic = {
-                    "product_order_id": result["productOrderId"],
-                    "order_id": result["orderId"],
-                    "product_order_status": result["productOrderStatus"],
-                }
-                change_order_list.append(dic)
-        print("change order list cnt : ", len(change_order_list))
-        print("success : change order list from : ", date_from)
-        print("success : caange order list to : ", date_to)
-        insert_log(
-            conn,
-            date,
-            "SUCCESS",
-            f"Order fetched for {len(change_order_list)}",
-            "smartstore",
-            f"{brand_info['brand']}",
-        )
-        return change_order_list
-    except Exception as e:
-        log_error(e)
-        insert_log(conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}")
+#         if results:
+#             for result in results:
+#                 dic = {
+#                     "product_order_id": result["productOrderId"],
+#                     "order_id": result["orderId"],
+#                     "product_order_status": result["productOrderStatus"],
+#                 }
+#                 change_order_list.append(dic)
+#         print("change order list cnt : ", len(change_order_list))
+#         print("success : change order list from : ", date_from)
+#         print("success : caange order list to : ", date_to)
+#         insert_log(
+#             conn,
+#             date,
+#             "SUCCESS",
+#             f"Order fetched for {len(change_order_list)}",
+#             "smartstore",
+#             f"{brand_info['brand']}",
+#         )
+#         return change_order_list
+#     except Exception as e:
+#         log_error(e)
+#         insert_log(conn, date, "FAIL", str(e), "smartstore", f"{brand_info['brand']}")
