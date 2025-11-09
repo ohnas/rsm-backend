@@ -21,7 +21,7 @@ conn = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor,
 )
 
-FILE_PATH = "/Users/ohnaseong/Downloads/2025_09.xlsx"
+FILE_PATH = "/Users/ohnaseong/Downloads/2025_10.xlsx"
 WORK_BOOK = load_workbook(FILE_PATH)
 
 
