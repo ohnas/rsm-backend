@@ -52,6 +52,20 @@ def get_order_list(date, brand_info, conn):
 
         if results:
             for result in results:
+                product_order = result["content"][
+                    "productOrder"
+                ]  # 가독성을 위해 변수 할당
+
+                # 판매자 부담 할인액 결정 로직 (방법 2 적용)
+                # 1. 일반 할인액 확인 -> 2. 즉시 할인액 확인 -> 3. 상품별 할인액 확인 -> 4. 모두 없으면 0
+                seller_discount = (
+                    product_order.get("sellerBurdenDiscountAmount")
+                    or product_order.get("sellerBurdenImmediateDiscountAmount")
+                    or product_order.get("sellerBurdenProductDiscountAmount")
+                    or product_order.get("sellerBurdenStoreDiscountAmount")
+                    or 0
+                )
+
                 dic = {
                     "product_order_id": result["productOrderId"],
                     "order_id": result["content"]["order"]["orderId"],
@@ -140,9 +154,8 @@ def get_order_list(date, brand_info, conn):
                     "remain_product_discount_amount": result["content"]["productOrder"][
                         "remainProductDiscountAmount"
                     ],
-                    "seller_burden_discount_amount": result["content"]["productOrder"][
-                        "sellerBurdenDiscountAmount"
-                    ],
+                    # 수정된 부분
+                    "seller_burden_discount_amount": seller_discount,
                     "product_imediate_discount_amount": result["content"][
                         "productOrder"
                     ].get("productImediateDiscountAmount"),
